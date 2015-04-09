@@ -1,0 +1,33 @@
+﻿Build started 06/04/2015 1:37:27 PM.
+     1>Project "C:\Users\Jango\Desktop\q2\Q\viewer\viewer.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /IC:\Users\Jango\Desktop\q2\Q\viewer\\common /IC:\Users\Jango\Desktop\q2\Q\viewer\..\external\include /IC:\Users\Jango\Desktop\q2\Q\viewer\..\external\include\ffmpeg /IC:\Users\Jango\Desktop\q2\Q\viewer\..\external\include\msstdtypes /IC:\Users\Jango\Desktop\q2\Q\viewer\..\external\include\freetype /IC:\Users\Jango\Desktop\q2\Q\viewer\..\external\include\ftgl /IC:\Users\Jango\Desktop\q2\Q\viewer\..\external\include\SDL2 /IC:\Users\Jango\Desktop\q2\Q\viewer\..\external\include\zlib /Zi /nologo /W3 /WX- /O2 /Oi /GL /D WIN32 /D _CRT_SECURE_NO_WARNINGS /D NDEBUG /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"C:\Users\Jango\Desktop\q2\Q\viewer\\Release\x64\\" /Fd"C:\Users\Jango\Desktop\q2\Q\viewer\\Release\x64\vc120.pdb" /Gd /TP /errorReport:prompt club.cpp DummySwing.cpp main.cpp MTracerFile.cpp render.cpp
+         club.cpp
+     1>club.cpp(8): warning C4305: 'initializing' : truncation from 'double' to 'const float'
+     1>club.cpp(10): warning C4305: 'initializing' : truncation from 'double' to 'const float'
+         DummySwing.cpp
+     1>DummySwing.cpp(1934): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>DummySwing.cpp(3866): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>DummySwing.cpp(5877): warning C4305: 'initializing' : truncation from 'double' to 'float'
+         main.cpp
+         MTracerFile.cpp
+         render.cpp
+     1>render.cpp(137): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>render.cpp(171): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+       ResourceCompile:
+         C:\Program Files (x86)\Windows Kits\8.1\bin\x86\rc.exe /l"0x0409" /nologo /fo"C:\Users\Jango\Desktop\q2\Q\viewer\\Release\x64\resources.res" resources.rc 
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Jango\Desktop\q2\Q\viewer\..\bin\x64\viewer.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:C:\Users\Jango\Desktop\q2\Q\viewer\..\external\bin.win64\ffmpeg /LIBPATH:C:\Users\Jango\Desktop\q2\Q\viewer\..\external\lib.win64\freetype /LIBPATH:C:\Users\Jango\Desktop\q2\Q\viewer\..\external\lib.win64\ftgl /LIBPATH:C:\Users\Jango\Desktop\q2\Q\viewer\..\external\lib.win64\zlib /LIBPATH:C:\Users\Jango\Desktop\q2\Q\viewer\..\external\lib.win64\sdl opengl32.lib glu32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Jango\Desktop\q2\Q\viewer\..\bin\x64\viewer.pdb" /SUBSYSTEM:WINDOWS /OPT:NOREF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Jango\Desktop\q2\Q\viewer\..\bin\x64\viewer.lib" /MACHINE:X64 C:\Users\Jango\Desktop\q2\Q\viewer\\Release\x64\resources.res
+         C:\Users\Jango\Desktop\q2\Q\viewer\\Release\x64\club.obj
+         C:\Users\Jango\Desktop\q2\Q\viewer\\Release\x64\DummySwing.obj
+         C:\Users\Jango\Desktop\q2\Q\viewer\\Release\x64\main.obj
+         C:\Users\Jango\Desktop\q2\Q\viewer\\Release\x64\MTracerFile.obj
+         C:\Users\Jango\Desktop\q2\Q\viewer\\Release\x64\render.obj
+         Generating code
+         Finished generating code
+         viewer.vcxproj -> C:\Users\Jango\Desktop\q2\Q\viewer\..\bin\x64\viewer.exe
+     1>Done Building Project "C:\Users\Jango\Desktop\q2\Q\viewer\viewer.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.97
