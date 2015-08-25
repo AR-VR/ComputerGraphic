@@ -7,7 +7,7 @@ CFLAGS := -Wall \
 				  -Wextra \
 				  -Wno-missing-field-initializers \
 
-CC := g++
+CC := clang++
 
 OBJECT_DIR :=obj/
 SOURCE_DIR :=src/
@@ -22,8 +22,6 @@ INCLUDES := -I/usr/local/include \
 #library link
 LD_LIBS := -L/usr/local/lib -lGLUT -framework OpenGL
 
-#SOURCES :=$(wildcard $(SOURCE_DIR)*.cpp) 
-#OBJECTS :=$(SOURCES:$(SOURCE_DIR)%.cpp=$(OBJECT_DIR)%.o)
 SOURCES :=$(wildcard $(SOURCE_DIR)*.cpp) 
 OBJECTS :=$(SOURCES:$(SOURCE_DIR)%.cpp=$(OBJECT_DIR)%.o)
 
