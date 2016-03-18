@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\ecl15838\Documents\GIT\AR_VR\ComputerGraphic\OpenGL\Src\misc05_picking\misc05_picking_BulletPhysics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\ecl15838\Documents\GIT\AR_VR\ComputerGraphic\OpenGL\Src\common\shader.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\ecl15838\Documents\GIT\AR_VR\ComputerGraphic\OpenGL\Src\common\controls.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\ecl15838\Documents\GIT\AR_VR\ComputerGraphic\OpenGL\Src\common\texture.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\ecl15838\Documents\GIT\AR_VR\ComputerGraphic\OpenGL\Src\common\objloader.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\ecl15838\Documents\GIT\AR_VR\ComputerGraphic\OpenGL\Src\common\vboindexer.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\ecl15838\Documents\GIT\AR_VR\ComputerGraphic\OpenGL\Src\common\shader.hpp">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\ecl15838\Documents\GIT\AR_VR\ComputerGraphic\OpenGL\Src\common\controls.hpp">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\ecl15838\Documents\GIT\AR_VR\ComputerGraphic\OpenGL\Src\common\texture.hpp">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\ecl15838\Documents\GIT\AR_VR\ComputerGraphic\OpenGL\Src\common\objloader.hpp">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\ecl15838\Documents\GIT\AR_VR\ComputerGraphic\OpenGL\Src\common\vboindexer.hpp">
+      <Filter>common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\ecl15838\Documents\GIT\AR_VR\ComputerGraphic\OpenGL\Src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\ecl15838\Documents\GIT\AR_VR\ComputerGraphic\OpenGL\Src\misc05_picking\StandardShading.vertexshader">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="C:\Users\ecl15838\Documents\GIT\AR_VR\ComputerGraphic\OpenGL\Src\misc05_picking\StandardShading.fragmentshader">
+      <Filter>shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{D55662CC-F3F4-3013-95FE-3AF16528982D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{CDE69B5C-A629-39C7-9146-2E9EC3D26FDA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{10A7146C-FA68-3043-B0AF-47FBE8F66CCD}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

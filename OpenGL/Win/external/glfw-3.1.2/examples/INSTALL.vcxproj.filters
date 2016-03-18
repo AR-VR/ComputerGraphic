@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\ecl15838\Documents\GIT\AR_VR\ComputerGraphic\OpenGL\Win\CMakeFiles\05f3ed9ec1c52caffdbdef0a64c0ca9c\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{904EE9BA-3572-3341-B8B3-8F1E5879C6B5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
