@@ -12,9 +12,25 @@ static inline float angleToRadian(const float degree)
 // Helper rotation function.  
 mat3 Transform::rotate(const float degrees, const vec3& axis) {
   // YOUR CODE FOR HW1 HERE
-	
+	float k1 = axis.x;
+	float k2 = axis.y;
+	float k3 = axis.z;
+	mat3 crossPoductK = mat3(
+		0, -k3, k2,
+		k3, 0, -k1,
+		-k2, k1, 0);
+	float angleInRadian = angleToRadian(degrees);
+	mat3 identity = mat3(
+		1, 0, 0,
+		0, 1, 0,
+		0, 0, 1);
+
+	mat3 rotationMat = identity
+		+ sin(angleInRadian)*crossPoductK 
+		+ (1-cos(angleInRadian))*crossPoductK*crossPoductK;
+
   // You will change this return call
-  return mat3();
+	return rotationMat;
 }
 
 // Transforms the camera left around the "crystal ball" interface
