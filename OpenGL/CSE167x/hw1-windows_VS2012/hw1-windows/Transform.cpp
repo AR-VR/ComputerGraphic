@@ -11,15 +11,17 @@ static inline float angleToRadian(const float degree)
 
 // Helper rotation function.  
 mat3 Transform::rotate(const float degrees, const vec3& axis) {
+	vec3 normalAxis = glm::normalize(axis);
   // YOUR CODE FOR HW1 HERE
-	float k1 = axis.x;
-	float k2 = axis.y;
-	float k3 = axis.z;
+	float k1 = normalAxis.x;
+	float k2 = normalAxis.y;
+	float k3 = normalAxis.z;
 	mat3 crossPoductK = mat3(
 		0, -k3, k2,
 		k3, 0, -k1,
 		-k2, k1, 0);
-	float angleInRadian = angleToRadian(degrees);
+	
+	float angleInRadian = glm::radians(degrees);
 	mat3 identity = mat3(
 		1, 0, 0,
 		0, 1, 0,
@@ -36,24 +38,17 @@ mat3 Transform::rotate(const float degrees, const vec3& axis) {
 // Transforms the camera left around the "crystal ball" interface
 void Transform::left(float degrees, vec3& eye, vec3& up) {
   // YOUR CODE FOR HW1 HERE
-	float angle = -angleToRadian(degrees);
-	mat3 rotation = mat3
-	( cos(angle),  0, sin(angle),
-		0,					 1, 0,
-	  -sin(angle), 0, cos(angle));
+	mat3 rotation = rotate(-degrees, up);
 	eye = rotation*eye;
 	up = rotation*up;
 }
 
 // Transforms the camera up around the "crystal ball" interface
 void Transform::up(float degrees, vec3& eye, vec3& up) {
+	vec3 axis = glm::cross(eye, up);
+	
   // YOUR CODE FOR HW1 HERE 
-	float angle = angleToRadian(degrees);
-	mat3 rotation = mat3(
-		1,	0,					0,
-		0,	cos(angle), -sin(angle),
-		0,  sin(angle), cos(angle)
-	);
+	mat3 rotation = rotate(-degrees, axis);
 	eye = rotation*eye;
 	up = rotation*up;
 }
