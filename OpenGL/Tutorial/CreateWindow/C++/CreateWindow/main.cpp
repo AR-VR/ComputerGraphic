@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <glfw3.h>
+#include "GLErrorCheck.h"
 
 using namespace std;
 
@@ -12,6 +13,20 @@ void processInput(GLFWwindow *window);
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
+
+const GLchar* const vertexShaderSrc =
+"#version 330 core																							\n"
+"layout (location = 0) in vec3 position;												\n"
+"void main() {																									\n"
+"  gl_Position = vec4(position.x, position.y, position.z, 1.0); \n"
+"}";
+
+const GLchar* const fragmentShaderSrc =
+"#version 330 core																							\n"
+"out vec4 FragColor;																						\n"
+"void main() {																									\n"
+"  FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);										\n"
+"}";
 
 int main(int argc, char** argv) {
 	glfwInit();
@@ -45,6 +60,25 @@ int main(int argc, char** argv) {
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return -1;
 	}
+	
+	GLuint vertexShader;
+	GL_EXEC(vertexShader = glCreateShader(GL_VERTEX_SHADER));
+	GL_EXEC(glShaderSource(vertexShader, 1, &vertexShaderSrc, NULL));
+	GL_COMPILE(vertexShader);
+
+	GLuint fragmentShader;
+	GL_EXEC(fragmentShader = glCreateShader(GL_FRAGMENT_SHADER));
+	GL_EXEC(glShaderSource(fragmentShader, 1, &fragmentShaderSrc, NULL));
+	GL_COMPILE(fragmentShader);
+
+	GLuint glProgram;
+	GL_EXEC(glProgram = glCreateProgram());
+	GL_EXEC(glAttachShader(glProgram, vertexShader));
+	GL_EXEC(glAttachShader(glProgram, fragmentShader));
+	GL_LINK(glProgram);
+	//Delete shader after program set up
+	GL_EXEC(glDeleteShader(vertexShader));
+	GL_EXEC(glDeleteShader(fragmentShader));
 
 	// render loop
 	// -----------
@@ -53,7 +87,7 @@ int main(int argc, char** argv) {
 		// input
 		// -----
 		processInput(window);
-
+		
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
 		glfwSwapBuffers(window);
@@ -70,8 +104,9 @@ int main(int argc, char** argv) {
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow *window)
 {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
+	}
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
