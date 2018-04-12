@@ -6,12 +6,21 @@
 
 //Very useful light-weight error checking that helps debug OpenGL
 
-void CheckOpenGLExecutionError(const char* stmt, const char* fname, int line)
+void CheckOpenGLExecutionError(const char* stmt, const char *file, int line)
 {
-	GLenum err = glGetError();
-	if (err != GL_NO_ERROR)
+	GLenum errorCode;
+	while ((errorCode = glGetError()) != GL_NO_ERROR)
 	{
-		printf("OpenGL error %08x, at %s:%i - for %s\n", err, fname, line, stmt);
+		std::string error;
+		switch (errorCode)
+		{
+		case GL_INVALID_ENUM:                  error = "INVALID_ENUM"; break;
+		case GL_INVALID_VALUE:                 error = "INVALID_VALUE"; break;
+		case GL_INVALID_OPERATION:             error = "INVALID_OPERATION"; break;
+		case GL_OUT_OF_MEMORY:                 error = "OUT_OF_MEMORY"; break;
+		case GL_INVALID_FRAMEBUFFER_OPERATION: error = "INVALID_FRAMEBUFFER_OPERATION"; break;
+		}
+		std::cout << stmt << " " << error.c_str() << " | " << file << " (" << line << ")" << std::endl;
 		abort();
 	}
 }
