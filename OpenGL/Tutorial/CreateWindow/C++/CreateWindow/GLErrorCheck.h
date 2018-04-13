@@ -1,12 +1,11 @@
-#ifndef GLERRORCHECK_H
-#define GLERRORCHECK_H
+#pragma once
 
 #include <glad/glad.h>
 #include<iostream>
 
 //Very useful light-weight error checking that helps debug OpenGL
 
-void CheckOpenGLExecutionError(const char* stmt, const char *file, int line)
+inline void CheckOpenGLExecutionError(const char* stmt, const char *file, int line)
 {
 	GLenum errorCode;
 	while ((errorCode = glGetError()) != GL_NO_ERROR)
@@ -35,7 +34,7 @@ void CheckOpenGLExecutionError(const char* stmt, const char *file, int line)
 #endif
 
 
-void CheckOpenGLCompileError(GLint shader, const char* fname, int line) {
+inline void CheckOpenGLCompileError(GLint shader, const char* fname, int line) {
 	GLint success;
 	GLchar infoLog[512];
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
@@ -60,7 +59,7 @@ void CheckOpenGLCompileError(GLint shader, const char* fname, int line) {
 } while (0)
 #endif
 
-void CheckOpenGLLinkError(GLint shaderProgram, const char* fname, int line) {
+inline void CheckOpenGLLinkError(GLint shaderProgram, const char* fname, int line) {
 	GLint success;
 	GLchar infoLog[512];
 	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
@@ -79,9 +78,7 @@ void CheckOpenGLLinkError(GLint shaderProgram, const char* fname, int line) {
 	CheckOpenGLLinkError(program, __FILE__, __LINE__); \
 } while (0)
 #else
-#define GL_LINK(shader) do { \
+#define GL_LINK(program) do { \
 	glLinkProgram(program); \
 } while (0)
-#endif
-
 #endif

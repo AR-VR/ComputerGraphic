@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <glfw3.h>
 #include "GLErrorCheck.h"
+#include "Shader.h"
 
 using namespace std;
 
@@ -28,6 +29,31 @@ const GLchar* const fragmentShaderSrc =
 "  FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);										\n" //Set all the drawing to this color
 "}";
 
+
+int InitGL() {
+	GLuint vertexShader;
+	GL_EXEC(vertexShader = glCreateShader(GL_VERTEX_SHADER));
+	GL_EXEC(glShaderSource(vertexShader, 1, &vertexShaderSrc, NULL));
+	GL_COMPILE(vertexShader);
+
+	GLuint fragmentShader;
+	GL_EXEC(fragmentShader = glCreateShader(GL_FRAGMENT_SHADER));
+	GL_EXEC(glShaderSource(fragmentShader, 1, &fragmentShaderSrc, NULL));
+	GL_COMPILE(fragmentShader);
+
+	GLuint glProgram;
+	GL_EXEC(glProgram = glCreateProgram());
+	GL_EXEC(glAttachShader(glProgram, vertexShader));
+	GL_EXEC(glAttachShader(glProgram, fragmentShader));
+	GL_LINK(glProgram);
+	//Delete shader after program set up
+	GL_EXEC(glDetachShader(glProgram, vertexShader));
+	GL_EXEC(glDeleteShader(vertexShader));
+	GL_EXEC(glDetachShader(glProgram, fragmentShader));
+	GL_EXEC(glDeleteShader(fragmentShader));
+
+	return glProgram;
+}
 
 
 int main(int argc, char** argv) {
@@ -64,27 +90,8 @@ int main(int argc, char** argv) {
 	}
 
 	//Init GL program
-	GLuint vertexShader;
-	GL_EXEC(vertexShader = glCreateShader(GL_VERTEX_SHADER));
-	GL_EXEC(glShaderSource(vertexShader, 1, &vertexShaderSrc, NULL));
-	GL_COMPILE(vertexShader);
-
-	GLuint fragmentShader;
-	GL_EXEC(fragmentShader = glCreateShader(GL_FRAGMENT_SHADER));
-	GL_EXEC(glShaderSource(fragmentShader, 1, &fragmentShaderSrc, NULL));
-	GL_COMPILE(fragmentShader);
-
-	GLuint glProgram;
-	GL_EXEC(glProgram = glCreateProgram());
-	GL_EXEC(glAttachShader(glProgram, vertexShader));
-	GL_EXEC(glAttachShader(glProgram, fragmentShader));
-	GL_LINK(glProgram);
-	//Delete shader after program set up
-	GL_EXEC(glDeleteShader(vertexShader));
-	GL_EXEC(glDeleteShader(fragmentShader));
-
-
-
+	//GLuint glProgram = InitGL();
+	Shader shaderProgram = Shader("Shader\\vertex.glsl", "Shader\\fragment.glsl");
 	//Coordinate System
 	//     1
 	// -1     1
@@ -147,7 +154,9 @@ int main(int argc, char** argv) {
 		GL_EXEC(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 		GL_EXEC(glClear(GL_COLOR_BUFFER_BIT));
 
-		GL_EXEC(glUseProgram(glProgram));
+		//GL_EXEC(glUseProgram(glProgram));
+		GL_EXEC(shaderProgram.useProgram());
+
 		GL_EXEC(glBindVertexArray(vao));
 		GL_EXEC(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
 		GL_EXEC(glBindVertexArray(0));
@@ -159,7 +168,7 @@ int main(int argc, char** argv) {
 
 	GL_EXEC(glDeleteBuffers(1, &vbo));
 	GL_EXEC(glDeleteVertexArrays(1, &vao));
-
+	//GL_EXEC(glDeleteProgram(glProgram));
 	// glfw: terminate, clearing all previously allocated GLFW resources.
 	// ------------------------------------------------------------------
 	glfwTerminate();
