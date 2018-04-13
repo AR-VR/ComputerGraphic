@@ -108,10 +108,10 @@ int main(int argc, char** argv) {
 	// 2     1
 	//
 	const float vertices[] = {
-		 0.5f,  0.5f, 0.0f,  // top right
-		 0.5f, -0.5f, 0.0f,  // bottom right
-		-0.5f, -0.5f, 0.0f,  // bottom left
-		-0.5f,  0.5f, 0.0f   // top left 
+		 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f, // top right, red
+		 0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,// bottom right, green
+		-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,// bottom left, blue
+		-0.5f, 0.5f, 0.0f,   1.0f, 1.0f, 1.0f,   // top left, white
 	};
 
 	const unsigned int indices[] = {  // note that we start from 0!
@@ -137,8 +137,13 @@ int main(int argc, char** argv) {
 
 	//3. Configure vertex attributes (bind to shader variable from my understanding)
 	int vertexIndex = 0;
-	GL_EXEC(glVertexAttribPointer(vertexIndex, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
+	GL_EXEC(glVertexAttribPointer(vertexIndex, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0));
 	GL_EXEC(glEnableVertexAttribArray(vertexIndex));
+
+	int colorIndex = 1;
+	GL_EXEC(glVertexAttribPointer(colorIndex, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))));
+	GL_EXEC(glEnableVertexAttribArray(colorIndex));
+
 	//4. Unbind VBO, prevent overwritten/polluted
 	GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, 0));
 

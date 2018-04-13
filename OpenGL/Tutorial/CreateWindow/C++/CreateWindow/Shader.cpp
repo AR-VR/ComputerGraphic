@@ -68,8 +68,29 @@ void Shader::useProgram()
 	GL_EXEC(glUseProgram(glProgramID));
 }
 
+void Shader::setUniformBool(const std::string &name, bool value) const
+{
+	GLuint uniformLocation;
+	GL_EXEC(uniformLocation= glGetUniformLocation(glProgramID, name.c_str()));
+	GL_EXEC(glUniform1i(uniformLocation, (int)value));
+}
+
+void Shader::setUniformInt(const std::string &name, int value) const
+{
+	GLuint uniformLocation;
+	GL_EXEC(uniformLocation = glGetUniformLocation(glProgramID, name.c_str()));
+	GL_EXEC(glUniform1i(uniformLocation, value));
+}
+
+void Shader::setUniformFloat(const std::string &name, float value) const
+{
+	GLuint uniformLocation;
+	GL_EXEC(uniformLocation = glGetUniformLocation(glProgramID, name.c_str()));
+	GL_EXEC(glUniform1f(uniformLocation, value));
+}
+
 Shader::~Shader()
 {
-	//try some kind of RAII approach here
+	//practice RAII approach here
 	GL_EXEC(glDeleteProgram(glProgramID));
 }
