@@ -5,6 +5,9 @@
 #include "GLErrorCheck.h"
 #include "Shader.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 using namespace std;
 
 
@@ -82,7 +85,7 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 	glfwMakeContextCurrent(window);
-	
+
 	//Buffere size update callback
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
@@ -97,10 +100,17 @@ int main(int argc, char** argv) {
 	//Init GL program
 	//GLuint glProgram = InitGL();
 	Shader shaderProgram = Shader("Shader\\vertex.glsl", "Shader\\fragment.glsl");
-	//Coordinate System
+
+	//NDC Coordinate System
 	//     1
 	// -1     1
 	//    -1
+
+	//Texture Coordinate
+	//(0,1)       (1,1)
+	//
+	//
+	//(0,0)       (1,0)
 
 	//Vertex Order
 	// 3	   0
@@ -108,15 +118,15 @@ int main(int argc, char** argv) {
 	// 2     1
 	//
 	const float vertices[] = {
-		 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f, // top right, red
-		 0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,// bottom right, green
-		-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,// bottom left, blue
-		-0.5f, 0.5f, 0.0f,   1.0f, 1.0f, 1.0f,   // top left, white
+		 0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  1.0f, 1.0f,   // top right, red
+		 0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,		// bottom right, green
+		-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,		// bottom left, blue
+		-0.5f, 0.5f, 0.0f,   1.0f, 1.0f, 0.0f,  0.0f, 1.0f		// top left, white
 	};
 
 	const unsigned int indices[] = {  // note that we start from 0!
-		0, 1, 2,  // first Triangle
-		2, 3, 0   // second Triangle
+		0, 1, 3,  // first Triangle
+		1, 2, 3   // second Triangle
 	};
 
 	unsigned int vao, vbo, ebo;
@@ -126,7 +136,7 @@ int main(int argc, char** argv) {
 
 	//1. Bind vertex array object (container) first
 	GL_EXEC(glBindVertexArray(vao));
-	
+
 	//2. Bind VBO
 	GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, vbo));
 	//Load vertices data to GPU, and GL_STATIC_DRAW means data will not be modified after loading
@@ -137,12 +147,16 @@ int main(int argc, char** argv) {
 
 	//3. Configure vertex attributes (bind to shader variable from my understanding)
 	int vertexIndex = 0;
-	GL_EXEC(glVertexAttribPointer(vertexIndex, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0));
+	GL_EXEC(glVertexAttribPointer(vertexIndex, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0));
 	GL_EXEC(glEnableVertexAttribArray(vertexIndex));
 
 	int colorIndex = 1;
-	GL_EXEC(glVertexAttribPointer(colorIndex, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))));
+	GL_EXEC(glVertexAttribPointer(colorIndex, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float))));
 	GL_EXEC(glEnableVertexAttribArray(colorIndex));
+
+	int textureIndex = 2;
+	GL_EXEC(glVertexAttribPointer(textureIndex, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float))));
+	GL_EXEC(glEnableVertexAttribArray(textureIndex));
 
 	//4. Unbind VBO, prevent overwritten/polluted
 	GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, 0));
@@ -152,6 +166,33 @@ int main(int argc, char** argv) {
 
 	//5. unbind VAO, not a must
 	GL_EXEC(glBindVertexArray(0));
+
+	unsigned int textureID;
+	GL_EXEC(glGenTextures(1, &textureID));
+	GL_EXEC(glBindTexture(GL_TEXTURE_2D, textureID));
+	// set the texture wrapping/filtering options (on the currently bound texture object)
+	GL_EXEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+	GL_EXEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+
+	//When scale down, make it more blocked pattern
+	GL_EXEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+	//When scale up, make it more linear pattern
+	GL_EXEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+
+	//Load texture into GPU
+	int width, height, nrChannels;
+	unsigned char *data = stbi_load("Texture\\wall.jpg", &width, &height, &nrChannels, 0);
+	if (data) {
+		GL_EXEC(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data));
+		GL_EXEC(glGenerateMipmap(GL_TEXTURE_2D));
+	}
+	else
+	{
+		std::cout << "Failed to load texture" << std::endl;
+	}
+	GL_EXEC(glBindTexture(GL_TEXTURE_2D, 0));
+	//Free image data after loaded to GPU
+	stbi_image_free(data);
 
 	// render loop
 	// -----------
@@ -164,10 +205,12 @@ int main(int argc, char** argv) {
 		GL_EXEC(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 		GL_EXEC(glClear(GL_COLOR_BUFFER_BIT));
 
+		GL_EXEC(glBindTexture(GL_TEXTURE_2D, textureID));
 		//GL_EXEC(glUseProgram(glProgram));
 		GL_EXEC(shaderProgram.useProgram());
 
 		GL_EXEC(glBindVertexArray(vao));
+		//Since we went through 0, 1, 3 first Triangle, 1, 2, 3 second Triangle, so total 6 elements(vertices)
 		GL_EXEC(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
 		GL_EXEC(glBindVertexArray(0));
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -177,8 +220,8 @@ int main(int argc, char** argv) {
 	}
 
 	GL_EXEC(glDeleteBuffers(1, &vbo));
+	GL_EXEC(glDeleteBuffers(1, &ebo));
 	GL_EXEC(glDeleteVertexArrays(1, &vao));
-	//GL_EXEC(glDeleteProgram(glProgram));
 	// glfw: terminate, clearing all previously allocated GLFW resources.
 	// ------------------------------------------------------------------
 	glfwTerminate();

@@ -64,7 +64,8 @@
       <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)Shader\*.*" "$(TargetDir)Shader" /Y /I /E</Command>
+      <Command>xcopy "$(ProjectDir)Shader\*.*" "$(TargetDir)Shader" /Y /I /E
+xcopy "$(ProjectDir)Texture\*.*" "$(TargetDir)Texture" /Y /I /E</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -88,7 +89,8 @@
       <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)Shader\*.*" "$(TargetDir)Shader" /Y /I /E</Command>
+      <Command>xcopy "$(ProjectDir)Shader\*.*" "$(TargetDir)Shader" /Y /I /E
+xcopy "$(ProjectDir)Texture\*.*" "$(TargetDir)Texture" /Y /I /E</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -99,10 +101,14 @@
   <ItemGroup>
     <ClInclude Include="GLErrorCheck.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\fragment.glsl" />
     <None Include="Shader\vertex.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Texture\square.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
