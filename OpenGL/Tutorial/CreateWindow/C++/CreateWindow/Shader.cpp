@@ -63,30 +63,45 @@ Shader::Shader(const char*vertexShaderPath, const char* fragmentShaderPath)
 	GL_EXEC(glDeleteShader(fragmentShader));
 }
 
-void Shader::useProgram()
+void Shader::UseProgram()
 {
 	GL_EXEC(glUseProgram(glProgramID));
 }
 
-void Shader::setUniformBool(const std::string &name, bool value) const
+const unsigned int Shader::GetAttributeLocation(const std::string &name)
+{
+  unsigned int attributeLocation;
+  GL_EXEC(attributeLocation = glGetAttribLocation(glProgramID, name.c_str()));
+  return attributeLocation;
+}
+
+void Shader::SetUniformBool(const std::string &name, const bool value)
 {
 	GLuint uniformLocation;
 	GL_EXEC(uniformLocation= glGetUniformLocation(glProgramID, name.c_str()));
 	GL_EXEC(glUniform1i(uniformLocation, (int)value));
 }
 
-void Shader::setUniformInt(const std::string &name, int value) const
+void Shader::SetUniformInt(const std::string &name, const int value)
 {
 	GLuint uniformLocation;
 	GL_EXEC(uniformLocation = glGetUniformLocation(glProgramID, name.c_str()));
 	GL_EXEC(glUniform1i(uniformLocation, value));
 }
 
-void Shader::setUniformFloat(const std::string &name, float value) const
+void Shader::SetUniformFloat(const std::string &name, const float value)
 {
 	GLuint uniformLocation;
 	GL_EXEC(uniformLocation = glGetUniformLocation(glProgramID, name.c_str()));
 	GL_EXEC(glUniform1f(uniformLocation, value));
+}
+
+void Shader::SetUniformMatrix4fv(const std::string &name, const glm::mat4 matrix)
+{
+  GLuint uniformLocation;
+  GL_EXEC(uniformLocation = glGetUniformLocation(glProgramID, name.c_str()));
+  
+  GL_EXEC(glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(matrix)));
 }
 
 Shader::~Shader()

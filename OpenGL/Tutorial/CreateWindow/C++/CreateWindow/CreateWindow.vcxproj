@@ -94,11 +94,15 @@ xcopy "$(ProjectDir)Texture\*.*" "$(TargetDir)Texture" /Y /I /E</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Cube.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Cube.h" />
     <ClInclude Include="GLErrorCheck.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
@@ -109,6 +113,7 @@ xcopy "$(ProjectDir)Texture\*.*" "$(TargetDir)Texture" /Y /I /E</Command>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Texture\square.jpg" />
+    <Image Include="Texture\wall.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
