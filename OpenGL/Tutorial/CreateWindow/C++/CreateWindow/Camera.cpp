@@ -64,10 +64,10 @@ const glm::mat4 Camera::LookAt(glm::vec3 cameraPosition, glm::vec3 center, glm::
   //Not the actual up from camera's perspective
   glm::vec3 up = glm::normalize(upDirection);
   
-  //actual forward, right, up
+  //actual forward, right, up, need to be normalized before set as rotation matrix
   glm::vec3 f = glm::normalize(glm::vec3(center - cameraPosition));
-  glm::vec3 r = glm::cross(f, up);
-  glm::vec3 u = glm::cross(glm::normalize(r), f);
+  glm::vec3 r = glm::normalize(glm::cross(f, up));
+  glm::vec3 u = glm::normalize(glm::cross(r, f));
 
   float rotationArray[] =
   {
@@ -79,6 +79,7 @@ const glm::mat4 Camera::LookAt(glm::vec3 cameraPosition, glm::vec3 center, glm::
 
   glm::mat4 rotation = glm::make_mat4(rotationArray);
   worldToCameraMatrix = rotation*translation;
+  worldToCameraMatrix = translation*rotation;
   return worldToCameraMatrix;
 }
 
