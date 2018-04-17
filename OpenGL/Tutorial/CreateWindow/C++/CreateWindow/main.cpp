@@ -29,7 +29,6 @@ static Cube cube;
 
 static float zNear = 0.1, zFar = 99.0;
 static float fovYDegree = 60;
-
 int main(int argc, char** argv) {
 
 #ifndef _DEBUG
@@ -116,6 +115,8 @@ int main(int argc, char** argv) {
 
 	//Load texture into GPU
 	int width, height, nrChannels;
+  // tell stb_image.h to flip loaded texture's on the y-axis.
+  stbi_set_flip_vertically_on_load(true);
 	unsigned char *data = stbi_load("Texture\\wall.jpg", &width, &height, &nrChannels, 0);
 	if (data) {
 		GL_EXEC(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data));
@@ -152,12 +153,15 @@ int main(int argc, char** argv) {
     GL_EXEC(glActiveTexture(GL_TEXTURE0));
 		GL_EXEC(glBindTexture(GL_TEXTURE_2D, textureID));
     shaderProgram.SetUniformMatrix4fv("model", glm::transpose(cube.GetModelMatrix()));
-    glm::mat4 viewMatrix = camera.LookAt(glm::vec3(0, 0, 5.0f), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+    glm::vec3 eye(0, 0, 5);
+    glm::vec3 center(0, 0, 0);
+    glm::mat4 viewMatrix = camera.LookAt(eye, center, glm::vec3(0, 1, 0));
     shaderProgram.SetUniformMatrix4fv("view", glm::transpose(viewMatrix));
+
     shaderProgram.SetUniformMatrix4fv("projection", glm::transpose(camera.GetProjectionMatrix()));
 
 		//Since we went through 0, 1, 3 first Triangle, 1, 2, 3 second Triangle, so total 6 elements(vertices)
-    GL_EXEC(glDrawArrays(GL_TRIANGLES, 0, 36));
+    GL_EXEC(glDrawArrays(GL_TRIANGLES, 0, Cube::VERTICES_COUNT));
 		GL_EXEC(glBindVertexArray(0));
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
