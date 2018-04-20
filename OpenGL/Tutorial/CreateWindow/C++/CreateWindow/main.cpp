@@ -131,8 +131,7 @@ int main(int argc, char** argv) {
 	stbi_image_free(data);
 
   camera.PerspectiveProjection(fovYDegree, ((float)SCR_WIDTH) / ((float)SCR_HEIGHT), zNear, zFar);
-  //shaderProgram.SetUniformMatrix4fv("view", glm::transpose(viewMatrix));
-  //shaderProgram.SetUniformMatrix4fv("model", glm::transpose(cube.GetModelMatrix()));
+
   glEnable(GL_DEPTH_TEST);
 	// render loop
 	// -----------
@@ -157,9 +156,9 @@ int main(int argc, char** argv) {
     glm::vec3 center(0, 0, 0);
     glm::mat4 viewMatrix = camera.LookAt(eye, center, glm::vec3(0, 1, 0));
     shaderProgram.SetUniformMatrix4fv("view", glm::transpose(viewMatrix));
-
     shaderProgram.SetUniformMatrix4fv("projection", glm::transpose(camera.GetProjectionMatrix()));
-
+    shaderProgram.SetUniform3fv("lightColor", glm::vec3(1, 1, 1));
+    shaderProgram.SetUniformFloat("ambientStrength", 0.1f);
 		//Since we went through 0, 1, 3 first Triangle, 1, 2, 3 second Triangle, so total 6 elements(vertices)
     GL_EXEC(glDrawArrays(GL_TRIANGLES, 0, Cube::VERTICES_COUNT));
 		GL_EXEC(glBindVertexArray(0));
@@ -191,9 +190,9 @@ void processInput(GLFWwindow *window)
 	}
 
   if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-    rollAngle+=0.1;
+    yawAngle += 0.1;
   } else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-    rollAngle -= 0.1;
+    yawAngle -= 0.1;
   } else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
     pitchAngle += 0.1;
   } else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {

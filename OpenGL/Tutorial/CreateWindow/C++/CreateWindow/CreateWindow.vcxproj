@@ -109,6 +109,7 @@ xcopy "$(ProjectDir)Texture\*.*" "$(TargetDir)Texture" /Y /I /E</Command>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\fragment.glsl" />
+    <None Include="Shader\lampFragment.glsl" />
     <None Include="Shader\vertex.glsl" />
   </ItemGroup>
   <ItemGroup>

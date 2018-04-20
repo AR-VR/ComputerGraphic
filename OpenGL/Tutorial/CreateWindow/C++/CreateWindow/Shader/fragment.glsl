@@ -3,9 +3,13 @@ in vec2 texCoordToFragment;
 
 uniform sampler2D fragmentTexture;
 
+uniform vec3 lightColor;
+
+uniform float ambientStrength;
+
 out vec4 FragColor;	
 
 void main() {							
-  //FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f); 
-  FragColor = texture(fragmentTexture, texCoordToFragment); 
+  vec3 ambientLight = ambientStrength*lightColor;
+  FragColor = texture(fragmentTexture, texCoordToFragment)*vec4(ambientLight, 1.0f); 
 }

@@ -14,7 +14,8 @@ public:
 	void SetUniformBool(const std::string &name, const bool value);
 	void SetUniformInt(const std::string &name, const int value);
 	void SetUniformFloat(const std::string &name, const float value);
-  void Shader::SetUniformMatrix4fv(const std::string &name, const glm::mat4 matrix);
+  void SetUniformMatrix4fv(const std::string &name, const glm::mat4 matrix);
+  void SetUniform3fv(const std::string &name, const glm::vec3 vector);
 	~Shader();
 
 private:

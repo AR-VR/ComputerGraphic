@@ -6,6 +6,7 @@
 
 #define VERTEX_UNITS 3
 #define TEXTURE_UNITS 2
+#define NORMAL_UNITS 3
 
 class Cube
 {
@@ -20,7 +21,7 @@ public:
   //Define in header, init in cpp file
 
   static const unsigned int VERTICES_COUNT = 36;
-  static const unsigned int ELEMENTS_PER_VERTEX = VERTEX_UNITS + TEXTURE_UNITS;
+  static const unsigned int ELEMENTS_PER_VERTEX = VERTEX_UNITS + TEXTURE_UNITS + NORMAL_UNITS;
   static const float vertices[VERTICES_COUNT*ELEMENTS_PER_VERTEX];
 
 private:

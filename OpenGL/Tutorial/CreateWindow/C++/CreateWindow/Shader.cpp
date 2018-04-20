@@ -104,6 +104,13 @@ void Shader::SetUniformMatrix4fv(const std::string &name, const glm::mat4 matrix
   GL_EXEC(glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(matrix)));
 }
 
+void Shader::SetUniform3fv(const std::string &name, const glm::vec3 vector)
+{
+  GLuint uniformLocation;
+  GL_EXEC(uniformLocation = glGetUniformLocation(glProgramID, name.c_str()));
+  GL_EXEC(glUniform3fv(uniformLocation, 1, glm::value_ptr(vector)));
+}
+
 Shader::~Shader()
 {
 	//practice RAII approach here
