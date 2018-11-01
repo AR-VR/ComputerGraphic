@@ -29,6 +29,7 @@ static Cube cube;
 
 static float zNear = 0.1, zFar = 99.0;
 static float fovYDegree = 60;
+
 int main(int argc, char** argv) {
 
 #ifndef _DEBUG
@@ -36,10 +37,6 @@ int main(int argc, char** argv) {
 #endif
 
 	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
 
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
