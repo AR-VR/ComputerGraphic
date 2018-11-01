@@ -78,14 +78,14 @@ xcopy "$(ProjectDir)Texture\*.*" "$(TargetDir)Texture" /Y /I /E</Command>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\..\GLFW_VS2013\include;..\..\..\..\glad\include;..\..\..\..\glm;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\GLFW_VS2015\include;..\..\..\..\glad\include;..\..\..\..\glm</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\..\..\..\GLFW_VS2013\libs;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\GLFW_VS2015\libs;</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
