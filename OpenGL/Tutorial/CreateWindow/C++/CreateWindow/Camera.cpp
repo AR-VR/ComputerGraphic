@@ -14,7 +14,7 @@ const glm::mat4 Camera::PerspectiveProjection(float fovyDegree, float aspect, fl
   float l = -r;
   float projectionArray[] =
   {
-    2 * zNear / (r - l),  0,                   (r+l)/(r-l),                       0,
+    2 * zNear / (r - l),  0,                   (r + l) / (r - l),                 0,
     0,                    2 * zNear / (t - b), (t + b) / (t - b),                 0,
     0,                    0,                   -(zFar + zNear) / (zFar - zNear), -2 * zFar*zNear / (zFar - zNear),
     0,                    0,                   -1,                                0
@@ -26,33 +26,33 @@ const glm::mat4 Camera::PerspectiveProjection(float fovyDegree, float aspect, fl
 
 const glm::mat4 Camera::OrthoGraphicProjection(float right, float left, float top, float bottom, float far, float near)
 {
-	float centering[] =
-	{
-		1, 0, 0, -(left + right) / 2,
-		0, 1, 0, -(top + bottom) / 2,
-		0, 0, 1, -(far + near) / 2,
-		0, 0, 0, 1
-	};
+  float centering[] =
+  {
+    1, 0, 0, -(left + right) / 2,
+    0, 1, 0, -(top + bottom) / 2,
+    0, 0, 1, -(far + near) / 2,
+    0, 0, 0, 1
+  };
 
   float scale[] =
   {
-    2 / (right - left), 0, 0, 0,
-    0, 2 / (top - bottom), 0, 0,
-    0, 0, 2 / (far - near),
-    0, 0, 0, 1,
+    2 / (right - left), 0,                  0,                0,
+    0,                  2 / (top - bottom), 0,                0,
+    0,                  0,                  2 / (far - near), 0,
+    0,                  0,                  0,                1,
   };
 
   projection = glm::make_mat4(scale)*glm::make_mat4(centering);
-  
+
   //flip z axis
-  projection[3][3] *=-1;
+  projection[3][3] *= -1;
 
   return projection;
 }
 
 const glm::mat4 Camera::LookAt(glm::vec3 cameraPosition, glm::vec3 center, glm::vec3 upDirection)
 {
-  float translationArray[] = 
+  float translationArray[] =
   {
     1, 0, 0, -cameraPosition.x,
     0, 1, 0, -cameraPosition.y,
@@ -60,10 +60,10 @@ const glm::mat4 Camera::LookAt(glm::vec3 cameraPosition, glm::vec3 center, glm::
     0, 0, 0, 1
   };
   glm::mat4 translation = glm::make_mat4(translationArray);
-  
+
   //Not the actual up from camera's perspective
   glm::vec3 up = glm::normalize(upDirection);
-  
+
   //actual forward, right, up, need to be normalized before set as rotation matrix
   glm::vec3 f = glm::normalize(glm::vec3(center - cameraPosition));
   glm::vec3 r = glm::normalize(glm::cross(f, up));

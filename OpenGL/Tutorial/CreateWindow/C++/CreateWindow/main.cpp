@@ -33,113 +33,113 @@ static float fovYDegree = 60;
 int main(int argc, char** argv) {
 
 #ifndef _DEBUG
-	FreeConsole();
+  FreeConsole();
 #endif
 
-	glfwInit();
+  glfwInit();
 
 #ifdef __APPLE__
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
+  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
 #endif
 
-	// glfw window creation
-	// --------------------
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "GL Window", NULL, NULL);
-	if (window == NULL)
-	{
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-	glfwMakeContextCurrent(window);
+  // glfw window creation
+  // --------------------
+  GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "GL Window", NULL, NULL);
+  if (window == NULL)
+  {
+    std::cout << "Failed to create GLFW window" << std::endl;
+    glfwTerminate();
+    return -1;
+  }
+  glfwMakeContextCurrent(window);
 
-	//Buffere size update callback
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+  //Buffer size update callback
+  glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-	// glad: load all OpenGL function pointers
-	// ---------------------------------------
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		return -1;
-	}
+  // glad: load all OpenGL function pointers
+  // ---------------------------------------
+  if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+  {
+    std::cout << "Failed to initialize GLAD" << std::endl;
+    return -1;
+  }
 
 
   //Init GL program
   Shader shaderProgram = Shader("Shader\\vertex.glsl", "Shader\\fragment.glsl");
-  
-	unsigned int vao, vbo;
-	GL_EXEC(glGenVertexArrays(1, &vao));
-	GL_EXEC(glGenBuffers(1, &vbo));
-	//1. Bind vertex array object (container) first
-	GL_EXEC(glBindVertexArray(vao));
 
-	//2. Bind VBO
-	GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, vbo));
-	//Load vertices data to GPU, and GL_STATIC_DRAW means data will not be modified after loading
+  unsigned int vao, vbo;
+  GL_EXEC(glGenVertexArrays(1, &vao));
+  GL_EXEC(glGenBuffers(1, &vbo));
+  //1. Bind vertex array object (container) first
+  GL_EXEC(glBindVertexArray(vao));
+
+  //2. Bind VBO
+  GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, vbo));
+  //Load vertices data to GPU, and GL_STATIC_DRAW means data will not be modified after loading
   GL_EXEC(glBufferData(GL_ARRAY_BUFFER, sizeof(Cube::vertices), Cube::vertices, GL_STATIC_DRAW));
 
-	//3. Configure vertex attributes (bind to shader variable from my understanding)
+  //3. Configure vertex attributes (bind to shader variable from my understanding)
   const unsigned int VERTEX_ATTRIBUTE = shaderProgram.GetAttributeLocation("inPosition");;
   GL_EXEC(glVertexAttribPointer(VERTEX_ATTRIBUTE, VERTEX_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), (void*)0));
   GL_EXEC(glEnableVertexAttribArray(VERTEX_ATTRIBUTE));
 
-  
+
   const unsigned int TEXTURE_ATTRIBUTE = shaderProgram.GetAttributeLocation("inTexCoord");;
   GL_EXEC(glVertexAttribPointer(TEXTURE_ATTRIBUTE, TEXTURE_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), (void*)(VERTEX_UNITS * sizeof(float))));
   GL_EXEC(glEnableVertexAttribArray(TEXTURE_ATTRIBUTE));
 
-	//4. Unbind VBO, prevent overwritten/polluted
-	GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, 0));
+  //4. Unbind VBO, prevent overwritten/polluted
+  GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
-	// remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  // remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
+  //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	//5. unbind VAO
-	GL_EXEC(glBindVertexArray(0));
+  //5. unbind VAO
+  GL_EXEC(glBindVertexArray(0));
 
-	unsigned int textureID;
-	GL_EXEC(glGenTextures(1, &textureID));
-	GL_EXEC(glBindTexture(GL_TEXTURE_2D, textureID));
-	// set the texture wrapping/filtering options (on the currently bound texture object)
+  unsigned int textureID;
+  GL_EXEC(glGenTextures(1, &textureID));
+  GL_EXEC(glBindTexture(GL_TEXTURE_2D, textureID));
+  // set the texture wrapping/filtering options (on the currently bound texture object)
   GL_EXEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
   GL_EXEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 
-	//When scale down, make it more blocked pattern
-	GL_EXEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-	//When scale up, make it more linear pattern
-	GL_EXEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+  //When scale down, make it more blocked pattern
+  GL_EXEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+  //When scale up, make it more linear pattern
+  GL_EXEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 
-	//Load texture into GPU
-	int width, height, nrChannels;
+  //Load texture into GPU
+  int width, height, nrChannels;
   // tell stb_image.h to flip loaded texture's on the y-axis.
   stbi_set_flip_vertically_on_load(true);
-	unsigned char *data = stbi_load("Texture\\wall.jpg", &width, &height, &nrChannels, 0);
-	if (data) {
-		GL_EXEC(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data));
-		GL_EXEC(glGenerateMipmap(GL_TEXTURE_2D));
-	}
-	else
-	{
-		std::cout << "Failed to load texture" << std::endl;
-	}
-	GL_EXEC(glBindTexture(GL_TEXTURE_2D, 0));
-	//Free image data after loaded to GPU
-	stbi_image_free(data);
+  unsigned char *data = stbi_load("Texture\\wall.jpg", &width, &height, &nrChannels, 0);
+  if (data) {
+    GL_EXEC(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data));
+    GL_EXEC(glGenerateMipmap(GL_TEXTURE_2D));
+  }
+  else
+  {
+    std::cout << "Failed to load texture" << std::endl;
+  }
+  GL_EXEC(glBindTexture(GL_TEXTURE_2D, 0));
+  //Free image data after loaded to GPU
+  stbi_image_free(data);
 
   camera.PerspectiveProjection(fovYDegree, ((float)SCR_WIDTH) / ((float)SCR_HEIGHT), zNear, zFar);
 
   glEnable(GL_DEPTH_TEST);
-	// render loop
-	// -----------
-	while (!glfwWindowShouldClose(window))
-	{
-		// input
-		// -----
-		processInput(window);
+  // render loop
+  // -----------
+  while (!glfwWindowShouldClose(window))
+  {
+    // input
+    // -----
+    processInput(window);
 
-		GL_EXEC(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
-    
+    GL_EXEC(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
+
     GL_EXEC(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)); // also clear the depth buffer now!
 
     GL_EXEC(shaderProgram.UseProgram());
@@ -147,7 +147,7 @@ int main(int argc, char** argv) {
     GL_EXEC(glBindVertexArray(vao));
 
     GL_EXEC(glActiveTexture(GL_TEXTURE0));
-		GL_EXEC(glBindTexture(GL_TEXTURE_2D, textureID));
+    GL_EXEC(glBindTexture(GL_TEXTURE_2D, textureID));
     shaderProgram.SetUniformMatrix4fv("model", glm::transpose(cube.GetModelMatrix()));
     glm::vec3 eye(0, 0, 5);
     glm::vec3 center(0, 0, 0);
@@ -156,21 +156,21 @@ int main(int argc, char** argv) {
     shaderProgram.SetUniformMatrix4fv("projection", glm::transpose(camera.GetProjectionMatrix()));
     shaderProgram.SetUniform3fv("lightColor", glm::vec3(1, 1, 1));
     shaderProgram.SetUniformFloat("ambientStrength", 0.1f);
-		//Since we went through 0, 1, 3 first Triangle, 1, 2, 3 second Triangle, so total 6 elements(vertices)
+    //Since we went through 0, 1, 3 first Triangle, 1, 2, 3 second Triangle, so total 6 elements(vertices)
     GL_EXEC(glDrawArrays(GL_TRIANGLES, 0, Cube::VERTICES_COUNT));
-		GL_EXEC(glBindVertexArray(0));
-		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-		// -------------------------------------------------------------------------------
-		glfwSwapBuffers(window);
-		glfwPollEvents();
-	}
+    GL_EXEC(glBindVertexArray(0));
+    // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+    // -------------------------------------------------------------------------------
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+  }
 
-	GL_EXEC(glDeleteBuffers(1, &vbo));
-	GL_EXEC(glDeleteVertexArrays(1, &vao));
-	// glfw: terminate, clearing all previously allocated GLFW resources.
-	// ------------------------------------------------------------------
-	glfwTerminate();
-	return 0;
+  GL_EXEC(glDeleteBuffers(1, &vbo));
+  GL_EXEC(glDeleteVertexArrays(1, &vao));
+  // glfw: terminate, clearing all previously allocated GLFW resources.
+  // ------------------------------------------------------------------
+  glfwTerminate();
+  return 0;
 }
 
 static float yawAngle = 0;
@@ -181,18 +181,21 @@ static float rollAngle = 0;
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow *window)
 {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-		glfwSetWindowShouldClose(window, true);
+  if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+    glfwSetWindowShouldClose(window, true);
     return;
-	}
+  }
 
   if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
     yawAngle += 0.1;
-  } else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+  }
+  else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
     yawAngle -= 0.1;
-  } else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+  }
+  else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
     pitchAngle += 0.1;
-  } else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+  }
+  else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
     pitchAngle -= 0.1;
   }
 
@@ -203,9 +206,9 @@ void processInput(GLFWwindow *window)
 // ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-	// make sure the viewport matches the new window dimensions; note that width and 
-	// height will be significantly larger than specified on retina displays.
-	glViewport(0, 0, width, height);
+  // make sure the viewport matches the new window dimensions; note that width and 
+  // height will be significantly larger than specified on retina displays.
+  glViewport(0, 0, width, height);
   float aspectRatio = ((float)width) / ((float)height);
   camera.PerspectiveProjection(fovYDegree, aspectRatio, zNear, zFar);
 }
