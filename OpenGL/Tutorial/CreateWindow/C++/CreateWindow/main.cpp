@@ -1,5 +1,6 @@
 #include<iostream>
-
+#include<fstream>
+#include<sstream>
 #include <glad/glad.h>
 #include <glfw3.h>
 #include "GLErrorCheck.h"
@@ -29,6 +30,32 @@ static Cube cube;
 
 static float zNear = 0.1, zFar = 99.0;
 static float fovYDegree = 60;
+
+static string LoadFileString(const char* filePath)
+{
+  ifstream fileStream;
+
+  fileStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+  try
+  {
+    // open files
+    fileStream.open(filePath);
+
+    stringstream fileStringStream;
+    // read file's buffer contents into streams
+    fileStringStream << fileStream.rdbuf();
+    // close file handlers
+    fileStream.close();
+    return fileStringStream.str();
+  }
+  catch (std::ifstream::failure e)
+  {
+    std::cerr << "FILE_NOT_SUCCESFULLY_READ: " << filePath << std::endl;
+    std::cerr << e.what() << std::endl;
+    DEBUG_THROW;
+    return string();
+  }
+}
 
 int main(int argc, char** argv) {
 
@@ -66,7 +93,12 @@ int main(int argc, char** argv) {
 
 
   //Init GL program
-  Shader shaderProgram = Shader("Shader\\vertex.glsl", "Shader\\fragment.glsl");
+  string vertexSrc = LoadFileString("Shader\\vertex.glsl");
+  string fragmentSrc = LoadFileString("Shader\\fragment.glsl");
+  if (vertexSrc.empty() || fragmentSrc.empty()) {
+
+  }
+  Shader shaderProgram = Shader(vertexSrc.c_str(), fragmentSrc.c_str());
 
   unsigned int vao, vbo;
   GL_EXEC(glGenVertexArrays(1, &vao));

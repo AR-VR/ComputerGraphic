@@ -6,39 +6,8 @@
 
 #include "GLErrorCheck.h"
 
-Shader::Shader(const char*vertexShaderPath, const char* fragmentShaderPath)
+Shader::Shader(const char*vertexSrc, const char* fragmentSrc)
 {
-  std::string vertexSrcString;
-  std::string fragmentSrcString;
-  std::ifstream vertexShaderFile;
-  std::ifstream fragmentShaderFile;
-
-  vertexShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-  fragmentShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-  try
-  {
-    // open files
-    vertexShaderFile.open(vertexShaderPath);
-    fragmentShaderFile.open(fragmentShaderPath);
-    std::stringstream vShaderStream, fShaderStream;
-    // read file's buffer contents into streams
-    vShaderStream << vertexShaderFile.rdbuf();
-    fShaderStream << fragmentShaderFile.rdbuf();
-    // close file handlers
-    vertexShaderFile.close();
-    fragmentShaderFile.close();
-    // convert stream into string
-    vertexSrcString = vShaderStream.str();
-    fragmentSrcString = fShaderStream.str();
-  }
-  catch (std::ifstream::failure e)
-  {
-    std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
-    return;
-  }
-
-  const char * vertexSrc = vertexSrcString.c_str();
-  const char * fragmentSrc = fragmentSrcString.c_str();
 
   unsigned int vertexShader, fragmentShader;
 
