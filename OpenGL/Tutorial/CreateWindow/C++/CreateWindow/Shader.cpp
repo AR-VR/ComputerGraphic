@@ -84,4 +84,9 @@ Shader::~Shader()
 {
   //practice RAII approach here
   GL_EXEC(glDeleteProgram(glProgramID));
+#ifdef _DEBUG
+  GLint deleteStatus;
+  GL_EXEC(glGetProgramiv(glProgramID, GL_DELETE_STATUS, &deleteStatus));
+  if (deleteStatus != GL_TRUE) DEBUG_THROW;
+#endif // _DEBUG
 }
