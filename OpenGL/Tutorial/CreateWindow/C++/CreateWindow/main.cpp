@@ -183,17 +183,21 @@ int main(int argc, char** argv) {
 
       GL_EXEC(glActiveTexture(GL_TEXTURE0));
       GL_EXEC(glBindTexture(GL_TEXTURE_2D, textureID));
-      shaderProgram.SetUniformMatrix4fv("model", glm::transpose(cube.GetModelMatrix()));
-      glm::vec3 eye(0, 0, 5);
+      glm::mat4 modelMatrix = cube.GetModelMatrix();
+      shaderProgram.SetUniformMatrix4fv("model", glm::transpose(modelMatrix));
+      
+      glm::vec3 eye(0, 0, 2);
       glm::vec3 center(0, 0, 0);
-      glm::mat4 viewMatrix = camera.LookAt(eye, center, glm::vec3(0, 1, 0));
+      glm::vec3 upDirection(0, 1, 0);
+      glm::mat4 viewMatrix = camera.LookAt(eye, center, upDirection);
       shaderProgram.SetUniformMatrix4fv("view", glm::transpose(viewMatrix));
+
       shaderProgram.SetUniformMatrix4fv("projection", glm::transpose(camera.GetProjectionMatrix()));
       shaderProgram.SetUniform3fv("lightColor", glm::vec3(1, 1, 1));
       shaderProgram.SetUniformFloat("ambientStrength", 0.9f);
-      //Since we went through 0, 1, 3 first Triangle, 1, 2, 3 second Triangle, so total 6 elements(vertices)
       GL_EXEC(glDrawArrays(GL_TRIANGLES, 0, Cube::VERTICES_COUNT));
       GL_EXEC(glBindVertexArray(0));
+
       // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
       // -------------------------------------------------------------------------------
       glfwSwapBuffers(window);
@@ -224,18 +228,29 @@ void processInput(GLFWwindow *window)
   }
 
   if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-    yawAngle += 0.1;
+    rollAngle += 10.1;
   }
   else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-    yawAngle -= 0.1;
+    rollAngle -= 10.1;
   }
   else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-    pitchAngle += 0.1;
+    pitchAngle += 10.1;
   }
   else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-    pitchAngle -= 0.1;
+    pitchAngle -= 10.1;
   }
-
+  else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+    yawAngle += 10.1;
+  }
+  else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+    yawAngle -= 10.1;
+  }
+  else if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) 
+  {
+    yawAngle = 0;
+    pitchAngle = 0;
+    rollAngle = 0;
+  }
   cube.Rotate(yawAngle, pitchAngle, rollAngle);
 }
 
