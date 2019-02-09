@@ -108,9 +108,9 @@ xcopy "$(ProjectDir)Texture\*.*" "$(TargetDir)Texture" /Y /I /E</Command>
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader\fragment.glsl" />
+    <None Include="Shader\basic.glfs" />
     <None Include="Shader\lampFragment.glsl" />
-    <None Include="Shader\vertex.glsl" />
+    <None Include="Shader\basic.glvs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Texture\square.jpg" />

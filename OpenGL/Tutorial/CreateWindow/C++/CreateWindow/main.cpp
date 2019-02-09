@@ -93,8 +93,8 @@ int main(int argc, char** argv) {
 
 
   //Init GL program
-  string vertexSrc = LoadFileString("Shader\\vertex.glsl");
-  string fragmentSrc = LoadFileString("Shader\\fragment.glsl");
+  string vertexSrc = LoadFileString("Shader\\basic.glvs");
+  string fragmentSrc = LoadFileString("Shader\\basic.glfs");
   if (vertexSrc.empty() || fragmentSrc.empty()) {
     std::cout << "Failed to Load Shader" << std::endl;
     return -1;
@@ -115,12 +115,11 @@ int main(int argc, char** argv) {
     GL_EXEC(glBufferData(GL_ARRAY_BUFFER, sizeof(Cube::vertices), Cube::vertices, GL_STATIC_DRAW));
 
     //3. Configure vertex attributes (bind to shader variable from my understanding)
-    const unsigned int VERTEX_ATTRIBUTE = shaderProgram.GetAttributeLocation("inPosition");;
+    const unsigned int VERTEX_ATTRIBUTE = shaderProgram.GetAttributeLocation("inPosition");
     GL_EXEC(glVertexAttribPointer(VERTEX_ATTRIBUTE, VERTEX_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), (void*)0));
     GL_EXEC(glEnableVertexAttribArray(VERTEX_ATTRIBUTE));
 
-
-    const unsigned int TEXTURE_ATTRIBUTE = shaderProgram.GetAttributeLocation("inTexCoord");;
+    const unsigned int TEXTURE_ATTRIBUTE = shaderProgram.GetAttributeLocation("inTexCoord");
     GL_EXEC(glVertexAttribPointer(TEXTURE_ATTRIBUTE, TEXTURE_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), (void*)(VERTEX_UNITS * sizeof(float))));
     GL_EXEC(glEnableVertexAttribArray(TEXTURE_ATTRIBUTE));
 
@@ -164,7 +163,7 @@ int main(int argc, char** argv) {
 
     camera.PerspectiveProjection(fovYDegree, ((float)SCR_WIDTH) / ((float)SCR_HEIGHT), zNear, zFar);
 
-    glEnable(GL_DEPTH_TEST);
+    GL_EXEC(glEnable(GL_DEPTH_TEST));
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
