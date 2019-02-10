@@ -55,13 +55,16 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader\lampFragment.glsl">
+    <None Include="Shader\basic.frag">
       <Filter>Source Files\Shader</Filter>
     </None>
-    <None Include="Shader\basic.glfs">
+    <None Include="Shader\basic.vert">
       <Filter>Source Files\Shader</Filter>
     </None>
-    <None Include="Shader\basic.glvs">
+    <None Include="Shader\diffuse.vert">
+      <Filter>Source Files\Shader</Filter>
+    </None>
+    <None Include="Shader\diffuse.frag">
       <Filter>Source Files\Shader</Filter>
     </None>
   </ItemGroup>

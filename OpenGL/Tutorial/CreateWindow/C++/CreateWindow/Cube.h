@@ -7,6 +7,10 @@
 #define VERTEX_UNITS 3
 #define TEXTURE_UNITS 2
 #define NORMAL_UNITS 3
+#define VERTEX_OFFSET_POINTER (void*)0
+#define TEXTURE_OFFSET_POINTER (void*)(VERTEX_UNITS * sizeof(float))
+#define NORMAL_OFFSET_POINTER (void*)((VERTEX_UNITS +TEXTURE_UNITS)* sizeof(float))
+
 
 class Cube
 {
