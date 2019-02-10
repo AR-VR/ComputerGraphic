@@ -86,19 +86,53 @@ static void RenderDiffuse(GLFWwindow* window)
   GL_EXEC(glVertexAttribPointer(VERTEX_ATTRIBUTE, VERTEX_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), VERTEX_OFFSET_POINTER));
   GL_EXEC(glEnableVertexAttribArray(VERTEX_ATTRIBUTE));
   
+  const unsigned int TEXTURE_ATTRIBUTE = shaderProgram.GetAttributeLocation("inTexCoord");
+  GL_EXEC(glVertexAttribPointer(TEXTURE_ATTRIBUTE, TEXTURE_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), TEXTURE_OFFSET_POINTER));
+  GL_EXEC(glEnableVertexAttribArray(TEXTURE_ATTRIBUTE));
+
   //4. Configure normal attributes (bind to shader variable from my understanding)
   const unsigned int NORMAL_ATTRIBUTE = shaderProgram.GetAttributeLocation("inNormal");
   GL_EXEC(glVertexAttribPointer(NORMAL_ATTRIBUTE, NORMAL_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), NORMAL_OFFSET_POINTER));
   GL_EXEC(glEnableVertexAttribArray(NORMAL_ATTRIBUTE));
 
-  //4. Unbind VBO, prevent overwritten/polluted
+  //5. Unbind VBO, prevent overwritten/polluted
   GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
   // remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
   //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-  //5. unbind VAO
+  //6. unbind VAO
   GL_EXEC(glBindVertexArray(0));
+  
+  unsigned int textureID;
+  GL_EXEC(glGenTextures(1, &textureID));
+  GL_EXEC(glBindTexture(GL_TEXTURE_2D, textureID));
+  // set the texture wrapping/filtering options (on the currently bound texture object)
+  GL_EXEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+  GL_EXEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+
+  //When scale down, make it more blocked pattern
+  GL_EXEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+  //When scale up, make it more linear pattern
+  GL_EXEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+
+  //Load texture into GPU
+  int width, height, nrChannels;
+  // tell stb_image.h to flip loaded texture's on the y-axis.
+  stbi_set_flip_vertically_on_load(true);
+  unsigned char *data = stbi_load("Texture\\wall.jpg", &width, &height, &nrChannels, 0);
+  if (data) {
+    GL_EXEC(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data));
+    GL_EXEC(glGenerateMipmap(GL_TEXTURE_2D));
+  }
+  else
+  {
+    std::cout << "Failed to load texture" << std::endl;
+    DEBUG_THROW;
+  }
+  GL_EXEC(glBindTexture(GL_TEXTURE_2D, 0));
+  //Free image data after loaded to GPU
+  stbi_image_free(data);
 
   camera.PerspectiveProjection(fovYDegree, ((float)SCR_WIDTH) / ((float)SCR_HEIGHT), zNear, zFar);
 
@@ -116,8 +150,11 @@ static void RenderDiffuse(GLFWwindow* window)
     GL_EXEC(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)); // also clear the depth buffer now!
 
     GL_EXEC(shaderProgram.UseProgram());
-    //;
+    
     GL_EXEC(glBindVertexArray(vao));
+    GL_EXEC(glActiveTexture(GL_TEXTURE0));
+    GL_EXEC(glBindTexture(GL_TEXTURE_2D, textureID));
+
     glm::mat4 modelMatrix = cube.GetModelMatrix();
     shaderProgram.SetUniformMatrix4fv("model", glm::transpose(modelMatrix));
 
