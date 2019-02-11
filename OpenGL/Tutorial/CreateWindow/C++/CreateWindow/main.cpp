@@ -57,6 +57,134 @@ static string LoadFileString(const char* filePath)
   }
 }
 
+static void RenderSpecular(GLFWwindow* window)
+{
+  //Init GL program
+  string vertexSrc = LoadFileString("Shader\\specular.vert");
+  string fragmentSrc = LoadFileString("Shader\\specular.frag");
+  if (vertexSrc.empty() || fragmentSrc.empty()) {
+    std::cout << "Failed to Load Shader" << std::endl;
+    DEBUG_THROW;
+    return;
+  }
+  //This block is to clean up shader, somehow in AMD graphics card glfwTerminate conflicted with glDeleteProgram
+  Shader shaderProgram = Shader(vertexSrc.c_str(), fragmentSrc.c_str());
+
+  unsigned int vao, vbo;
+  GL_EXEC(glGenVertexArrays(1, &vao));
+  GL_EXEC(glGenBuffers(1, &vbo));
+  //1. Bind vertex array object (container) first
+  GL_EXEC(glBindVertexArray(vao));
+
+  //2. Bind VBO
+  GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, vbo));
+  //Load vertices data to GPU, and GL_STATIC_DRAW means data will not be modified after loading
+  GL_EXEC(glBufferData(GL_ARRAY_BUFFER, sizeof(Cube::vertices), Cube::vertices, GL_STATIC_DRAW));
+
+  //3. Configure vertex attributes (bind to shader variable from my understanding)
+  const unsigned int VERTEX_ATTRIBUTE = shaderProgram.GetAttributeLocation("inPosition");
+  GL_EXEC(glVertexAttribPointer(VERTEX_ATTRIBUTE, VERTEX_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), VERTEX_OFFSET_POINTER));
+  GL_EXEC(glEnableVertexAttribArray(VERTEX_ATTRIBUTE));
+
+  const unsigned int TEXTURE_ATTRIBUTE = shaderProgram.GetAttributeLocation("inTexCoord");
+  GL_EXEC(glVertexAttribPointer(TEXTURE_ATTRIBUTE, TEXTURE_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), TEXTURE_OFFSET_POINTER));
+  GL_EXEC(glEnableVertexAttribArray(TEXTURE_ATTRIBUTE));
+
+  //4. Configure normal attributes (bind to shader variable from my understanding)
+  const unsigned int NORMAL_ATTRIBUTE = shaderProgram.GetAttributeLocation("inNormal");
+  GL_EXEC(glVertexAttribPointer(NORMAL_ATTRIBUTE, NORMAL_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), NORMAL_OFFSET_POINTER));
+  GL_EXEC(glEnableVertexAttribArray(NORMAL_ATTRIBUTE));
+
+  //5. Unbind VBO, prevent overwritten/polluted
+  GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, 0));
+
+  // remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
+  //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+  //6. unbind VAO
+  GL_EXEC(glBindVertexArray(0));
+
+  unsigned int textureID;
+  GL_EXEC(glGenTextures(1, &textureID));
+  GL_EXEC(glBindTexture(GL_TEXTURE_2D, textureID));
+  // set the texture wrapping/filtering options (on the currently bound texture object)
+  GL_EXEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+  GL_EXEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+
+  //When scale down, make it more blocked pattern
+  GL_EXEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+  //When scale up, make it more linear pattern
+  GL_EXEC(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+
+  //Load texture into GPU
+  int width, height, nrChannels;
+  // tell stb_image.h to flip loaded texture's on the y-axis.
+  stbi_set_flip_vertically_on_load(true);
+  unsigned char *data = stbi_load("Texture\\wall.jpg", &width, &height, &nrChannels, 0);
+  if (data) {
+    GL_EXEC(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data));
+    GL_EXEC(glGenerateMipmap(GL_TEXTURE_2D));
+  }
+  else
+  {
+    std::cout << "Failed to load texture" << std::endl;
+    DEBUG_THROW;
+  }
+  GL_EXEC(glBindTexture(GL_TEXTURE_2D, 0));
+  //Free image data after loaded to GPU
+  stbi_image_free(data);
+
+  camera.PerspectiveProjection(fovYDegree, ((float)SCR_WIDTH) / ((float)SCR_HEIGHT), zNear, zFar);
+
+  GL_EXEC(glEnable(GL_DEPTH_TEST));
+  // render loop
+  // -----------
+  while (!glfwWindowShouldClose(window))
+  {
+    // input
+    // -----
+    processInput(window);
+
+    GL_EXEC(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+
+    GL_EXEC(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)); // also clear the depth buffer now!
+
+    GL_EXEC(shaderProgram.UseProgram());
+
+    GL_EXEC(glBindVertexArray(vao));
+    GL_EXEC(glActiveTexture(GL_TEXTURE0));
+    GL_EXEC(glBindTexture(GL_TEXTURE_2D, textureID));
+
+    glm::mat4 modelMatrix = cube.GetModelMatrix();
+    shaderProgram.SetUniformMatrix4fv("model", glm::transpose(modelMatrix));
+
+    glm::vec3 eye(0, 0, 2);
+    glm::vec3 center(0, 0, 0);
+    glm::vec3 upDirection(0, 1, 0);
+    glm::mat4 viewMatrix = camera.LookAt(eye, center, upDirection);
+    shaderProgram.SetUniformMatrix4fv("view", glm::transpose(viewMatrix));
+
+    shaderProgram.SetUniformMatrix4fv("projection", glm::transpose(camera.GetProjectionMatrix()));
+
+    glm::vec3 lightPosition(1, 1, 1);
+    shaderProgram.SetUniform3fv("lightPosition", lightPosition);
+
+    shaderProgram.SetUniform3fv("cameraPosition", eye);
+
+    shaderProgram.SetUniform3fv("spotLightColor", glm::vec3(1, 1, 1));
+    GL_EXEC(glDrawArrays(GL_TRIANGLES, 0, Cube::VERTICES_COUNT));
+    GL_EXEC(glBindVertexArray(0));
+
+    // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+    // -------------------------------------------------------------------------------
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+  }
+
+  GL_EXEC(glDeleteBuffers(1, &vbo));
+  GL_EXEC(glDeleteVertexArrays(1, &vao));
+}
+
 static void RenderDiffuse(GLFWwindow* window)
 {
   //Init GL program
@@ -169,7 +297,7 @@ static void RenderDiffuse(GLFWwindow* window)
     glm::vec3 lightPosition(0, 0, 2);
     shaderProgram.SetUniform3fv("lightPosition", lightPosition);
 
-    shaderProgram.SetUniform3fv("diffuseLightColor", glm::vec3(1, 1, 1));
+    shaderProgram.SetUniform3fv("diffuseLightColor", glm::vec3(0.5, 0.5, 0.5));
     GL_EXEC(glDrawArrays(GL_TRIANGLES, 0, Cube::VERTICES_COUNT));
     GL_EXEC(glBindVertexArray(0));
 
@@ -336,7 +464,8 @@ int main(int argc, char** argv) {
   }
 
   //RenderBasic(window);
-  RenderDiffuse(window);
+  //RenderDiffuse(window);
+  RenderSpecular(window);
   // glfw: terminate, clearing all previously allocated GLFW resources.
   // ------------------------------------------------------------------
   glfwTerminate();
