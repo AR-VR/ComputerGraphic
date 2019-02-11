@@ -112,6 +112,8 @@ xcopy "$(ProjectDir)Texture\*.*" "$(TargetDir)Texture" /Y /I /E</Command>
     <None Include="Shader\diffuse.frag" />
     <None Include="Shader\diffuse.vert" />
     <None Include="Shader\basic.vert" />
+    <None Include="Shader\phong.frag" />
+    <None Include="Shader\phong.vert" />
     <None Include="Shader\specular.frag" />
     <None Include="Shader\specular.vert" />
   </ItemGroup>

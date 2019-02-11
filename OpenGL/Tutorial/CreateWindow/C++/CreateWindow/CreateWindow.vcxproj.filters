@@ -73,6 +73,12 @@
     <None Include="Shader\specular.vert">
       <Filter>Source Files\Shader</Filter>
     </None>
+    <None Include="Shader\phong.frag">
+      <Filter>Source Files\Shader</Filter>
+    </None>
+    <None Include="Shader\phong.vert">
+      <Filter>Source Files\Shader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Texture\square.jpg">
