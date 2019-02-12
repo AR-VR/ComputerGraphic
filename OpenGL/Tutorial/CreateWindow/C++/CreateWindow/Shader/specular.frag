@@ -16,7 +16,7 @@ out vec4 FragColor;
 void main() {
   //light reflection is reverse of initial light direction
   vec3 lightDirection = normalize(positionInWorld-lightPosition);
-  vec3 reflectDirection = reflect(lightDirection, transformNormal);
+  vec3 reflectDirection = normalize(reflect(lightDirection, transformNormal));
   vec3 viewDirection = normalize(cameraPosition - positionInWorld);
   //2.0 is shininess of the object
   float specularIntensity = pow(max(dot(viewDirection, reflectDirection), 0.0), 2.0);

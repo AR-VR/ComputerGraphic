@@ -166,6 +166,9 @@ static void RenderPhong(GLFWwindow* window)
 
     shaderProgram.SetUniformMatrix4fv("projection", glm::transpose(camera.GetProjectionMatrix()));
 
+    //https://github.com/AR-VR/ComputerGraphic/wiki/Transformation-of-Surface-Normal
+    glm::mat4 normalTransform(glm::transpose(glm::inverse(viewMatrix*modelMatrix)));
+    shaderProgram.SetUniformMatrix4fv("normalTransform", glm::transpose(normalTransform));
     glm::vec3 lightPosition(1, 1, 1);
     shaderProgram.SetUniform3fv("lightPosition", lightPosition);
 
@@ -287,20 +290,24 @@ static void RenderSpecular(GLFWwindow* window)
     glm::mat4 modelMatrix = cube.GetModelMatrix();
     shaderProgram.SetUniformMatrix4fv("model", glm::transpose(modelMatrix));
 
-    glm::vec3 eye(0, 0, 2);
+    glm::vec3 eye(2, 0, 2);
     glm::vec3 center(0, 0, 0);
     glm::vec3 upDirection(0, 1, 0);
     glm::mat4 viewMatrix = camera.LookAt(eye, center, upDirection);
     shaderProgram.SetUniformMatrix4fv("view", glm::transpose(viewMatrix));
 
     shaderProgram.SetUniformMatrix4fv("projection", glm::transpose(camera.GetProjectionMatrix()));
+    
+    //https://github.com/AR-VR/ComputerGraphic/wiki/Transformation-of-Surface-Normal
+    glm::mat4 normalTransform(glm::transpose(glm::inverse(viewMatrix*modelMatrix)));
+    shaderProgram.SetUniformMatrix4fv("normalTransform", glm::transpose(normalTransform));
 
-    glm::vec3 lightPosition(1, 1, 1);
+    glm::vec3 lightPosition(0, 0, 1);
     shaderProgram.SetUniform3fv("lightPosition", lightPosition);
 
     shaderProgram.SetUniform3fv("cameraPosition", eye);
 
-    shaderProgram.SetUniform3fv("spotLightColor", glm::vec3(1, 1, 1));
+    shaderProgram.SetUniform3fv("spotLightColor", glm::vec3(0.5, 0.5, 0.5));
     GL_EXEC(glDrawArrays(GL_TRIANGLES, 0, Cube::VERTICES_COUNT));
     GL_EXEC(glBindVertexArray(0));
 
@@ -420,9 +427,11 @@ static void RenderDiffuse(GLFWwindow* window)
     glm::vec3 upDirection(0, 1, 0);
     glm::mat4 viewMatrix = camera.LookAt(eye, center, upDirection);
     shaderProgram.SetUniformMatrix4fv("view", glm::transpose(viewMatrix));
-
     shaderProgram.SetUniformMatrix4fv("projection", glm::transpose(camera.GetProjectionMatrix()));
 
+    //https://github.com/AR-VR/ComputerGraphic/wiki/Transformation-of-Surface-Normal
+    glm::mat4 normalTransform(glm::transpose(glm::inverse(viewMatrix*modelMatrix)));
+    shaderProgram.SetUniformMatrix4fv("normalTransform", glm::transpose(normalTransform));
     glm::vec3 lightPosition(0, 0, 2);
     shaderProgram.SetUniform3fv("lightPosition", lightPosition);
 
