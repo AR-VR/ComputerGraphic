@@ -83,16 +83,16 @@ static void RenderPhong(GLFWwindow* window)
 
   //3. Configure vertex attributes (bind to shader variable from my understanding)
   const unsigned int VERTEX_ATTRIBUTE = shaderProgram.GetAttributeLocation("inPosition");
-  GL_EXEC(glVertexAttribPointer(VERTEX_ATTRIBUTE, VERTEX_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), VERTEX_OFFSET_POINTER));
+  GL_EXEC(glVertexAttribPointer(VERTEX_ATTRIBUTE, Cube::VERTEX_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), Cube::VERTEX_OFFSET_POINTER));
   GL_EXEC(glEnableVertexAttribArray(VERTEX_ATTRIBUTE));
 
   const unsigned int TEXTURE_ATTRIBUTE = shaderProgram.GetAttributeLocation("inTexCoord");
-  GL_EXEC(glVertexAttribPointer(TEXTURE_ATTRIBUTE, TEXTURE_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), TEXTURE_OFFSET_POINTER));
+  GL_EXEC(glVertexAttribPointer(TEXTURE_ATTRIBUTE, Cube::TEXTURE_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), Cube::TEXTURE_OFFSET_POINTER));
   GL_EXEC(glEnableVertexAttribArray(TEXTURE_ATTRIBUTE));
 
   //4. Configure normal attributes (bind to shader variable from my understanding)
   const unsigned int NORMAL_ATTRIBUTE = shaderProgram.GetAttributeLocation("inNormal");
-  GL_EXEC(glVertexAttribPointer(NORMAL_ATTRIBUTE, NORMAL_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), NORMAL_OFFSET_POINTER));
+  GL_EXEC(glVertexAttribPointer(NORMAL_ATTRIBUTE, Cube::NORMAL_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), Cube::NORMAL_OFFSET_POINTER));
   GL_EXEC(glEnableVertexAttribArray(NORMAL_ATTRIBUTE));
 
   //5. Unbind VBO, prevent overwritten/polluted
@@ -215,16 +215,16 @@ static void RenderSpecular(GLFWwindow* window)
 
   //3. Configure vertex attributes (bind to shader variable from my understanding)
   const unsigned int VERTEX_ATTRIBUTE = shaderProgram.GetAttributeLocation("inPosition");
-  GL_EXEC(glVertexAttribPointer(VERTEX_ATTRIBUTE, VERTEX_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), VERTEX_OFFSET_POINTER));
+  GL_EXEC(glVertexAttribPointer(VERTEX_ATTRIBUTE, Cube::VERTEX_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), Cube::VERTEX_OFFSET_POINTER));
   GL_EXEC(glEnableVertexAttribArray(VERTEX_ATTRIBUTE));
 
   const unsigned int TEXTURE_ATTRIBUTE = shaderProgram.GetAttributeLocation("inTexCoord");
-  GL_EXEC(glVertexAttribPointer(TEXTURE_ATTRIBUTE, TEXTURE_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), TEXTURE_OFFSET_POINTER));
+  GL_EXEC(glVertexAttribPointer(TEXTURE_ATTRIBUTE, Cube::TEXTURE_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), Cube::TEXTURE_OFFSET_POINTER));
   GL_EXEC(glEnableVertexAttribArray(TEXTURE_ATTRIBUTE));
 
   //4. Configure normal attributes (bind to shader variable from my understanding)
   const unsigned int NORMAL_ATTRIBUTE = shaderProgram.GetAttributeLocation("inNormal");
-  GL_EXEC(glVertexAttribPointer(NORMAL_ATTRIBUTE, NORMAL_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), NORMAL_OFFSET_POINTER));
+  GL_EXEC(glVertexAttribPointer(NORMAL_ATTRIBUTE, Cube::NORMAL_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), Cube::NORMAL_OFFSET_POINTER));
   GL_EXEC(glEnableVertexAttribArray(NORMAL_ATTRIBUTE));
 
   //5. Unbind VBO, prevent overwritten/polluted
@@ -347,16 +347,16 @@ static void RenderDiffuse(GLFWwindow* window)
 
   //3. Configure vertex attributes (bind to shader variable from my understanding)
   const unsigned int VERTEX_ATTRIBUTE = shaderProgram.GetAttributeLocation("inPosition");
-  GL_EXEC(glVertexAttribPointer(VERTEX_ATTRIBUTE, VERTEX_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), VERTEX_OFFSET_POINTER));
+  GL_EXEC(glVertexAttribPointer(VERTEX_ATTRIBUTE, Cube::VERTEX_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), Cube::VERTEX_OFFSET_POINTER));
   GL_EXEC(glEnableVertexAttribArray(VERTEX_ATTRIBUTE));
   
   const unsigned int TEXTURE_ATTRIBUTE = shaderProgram.GetAttributeLocation("inTexCoord");
-  GL_EXEC(glVertexAttribPointer(TEXTURE_ATTRIBUTE, TEXTURE_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), TEXTURE_OFFSET_POINTER));
+  GL_EXEC(glVertexAttribPointer(TEXTURE_ATTRIBUTE, Cube::TEXTURE_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), Cube::TEXTURE_OFFSET_POINTER));
   GL_EXEC(glEnableVertexAttribArray(TEXTURE_ATTRIBUTE));
 
   //4. Configure normal attributes (bind to shader variable from my understanding)
   const unsigned int NORMAL_ATTRIBUTE = shaderProgram.GetAttributeLocation("inNormal");
-  GL_EXEC(glVertexAttribPointer(NORMAL_ATTRIBUTE, NORMAL_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), NORMAL_OFFSET_POINTER));
+  GL_EXEC(glVertexAttribPointer(NORMAL_ATTRIBUTE, Cube::NORMAL_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), Cube::NORMAL_OFFSET_POINTER));
   GL_EXEC(glEnableVertexAttribArray(NORMAL_ATTRIBUTE));
 
   //5. Unbind VBO, prevent overwritten/polluted
@@ -475,11 +475,11 @@ static void RenderBasic(GLFWwindow* window)
 
   //3. Configure vertex attributes (bind to shader variable from my understanding)
   const unsigned int VERTEX_ATTRIBUTE = shaderProgram.GetAttributeLocation("inPosition");
-  GL_EXEC(glVertexAttribPointer(VERTEX_ATTRIBUTE, VERTEX_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), VERTEX_OFFSET_POINTER));
+  GL_EXEC(glVertexAttribPointer(VERTEX_ATTRIBUTE, Cube::VERTEX_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), Cube::VERTEX_OFFSET_POINTER));
   GL_EXEC(glEnableVertexAttribArray(VERTEX_ATTRIBUTE));
 
   const unsigned int TEXTURE_ATTRIBUTE = shaderProgram.GetAttributeLocation("inTexCoord");
-  GL_EXEC(glVertexAttribPointer(TEXTURE_ATTRIBUTE, TEXTURE_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), TEXTURE_OFFSET_POINTER));
+  GL_EXEC(glVertexAttribPointer(TEXTURE_ATTRIBUTE, Cube::TEXTURE_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), Cube::TEXTURE_OFFSET_POINTER));
   GL_EXEC(glEnableVertexAttribArray(TEXTURE_ATTRIBUTE));
 
   //4. Unbind VBO, prevent overwritten/polluted

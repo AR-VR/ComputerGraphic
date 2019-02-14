@@ -132,3 +132,7 @@ const float Cube::vertices[VERTICES_COUNT*ELEMENTS_PER_VERTEX] =
   -0.5f,  0.5f,  0.5f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f,
   -0.5f,  0.5f, -0.5f, 0.0f, 1.0f,  0.0f, 1.0f, 0.0f
 };
+
+const void* const Cube::VERTEX_OFFSET_POINTER = (void*)0;
+const void* const Cube::TEXTURE_OFFSET_POINTER = (void*)(VERTEX_UNITS* sizeof(float));
+const void* const Cube::NORMAL_OFFSET_POINTER = (void*)((VERTEX_UNITS + TEXTURE_UNITS) * sizeof(float));

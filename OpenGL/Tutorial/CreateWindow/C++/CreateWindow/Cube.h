@@ -4,17 +4,16 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 
-#define VERTEX_UNITS 3
-#define TEXTURE_UNITS 2
-#define NORMAL_UNITS 3
-#define VERTEX_OFFSET_POINTER (void*)0
-#define TEXTURE_OFFSET_POINTER (void*)(VERTEX_UNITS * sizeof(float))
-#define NORMAL_OFFSET_POINTER (void*)((VERTEX_UNITS +TEXTURE_UNITS)* sizeof(float))
-
+namespace Shape
+{
+  
+};
 
 class Cube
 {
+
 public:
+  
 	Cube();
 	const glm::mat4 GetModelMatrix();
 	void Scale(float x, float y, float z);
@@ -23,10 +22,15 @@ public:
 	~Cube();
 
   //Define in header, init in cpp file
-
+  static const int VERTEX_UNITS = 3;
+  static const int TEXTURE_UNITS = 2;
+  static const int NORMAL_UNITS = 3;
   static const unsigned int VERTICES_COUNT = 36;
   static const unsigned int ELEMENTS_PER_VERTEX = VERTEX_UNITS + TEXTURE_UNITS + NORMAL_UNITS;
   static const float vertices[VERTICES_COUNT*ELEMENTS_PER_VERTEX];
+  static const void* const VERTEX_OFFSET_POINTER;
+  static const void* const TEXTURE_OFFSET_POINTER;
+  static const void* const NORMAL_OFFSET_POINTER;
 
 private:
 	glm::mat4 scale;
