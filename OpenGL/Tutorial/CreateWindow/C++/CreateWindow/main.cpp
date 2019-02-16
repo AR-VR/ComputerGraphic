@@ -28,7 +28,7 @@ const unsigned int SCR_HEIGHT = 600;
 static Camera camera;
 static Cube cube;
 
-static float zNear = 0.1, zFar = 99.0;
+static float zNear = 0.1f, zFar = 99.0f;
 static float fovYDegree = 60;
 
 static string LoadFileString(const char* filePath)
@@ -69,7 +69,6 @@ static void RenderPhong(GLFWwindow* window)
   }
   //This block is to clean up shader, somehow in AMD graphics card glfwTerminate conflicted with glDeleteProgram
   Shader shaderProgram = Shader(vertexSrc.c_str(), fragmentSrc.c_str());
-
   unsigned int vao, vbo;
   GL_EXEC(glGenVertexArrays(1, &vao));
   GL_EXEC(glGenBuffers(1, &vbo));
@@ -79,7 +78,7 @@ static void RenderPhong(GLFWwindow* window)
   //2. Bind VBO
   GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, vbo));
   //Load vertices data to GPU, and GL_STATIC_DRAW means data will not be modified after loading
-  GL_EXEC(glBufferData(GL_ARRAY_BUFFER, sizeof(Cube::vertices), Cube::vertices, GL_STATIC_DRAW));
+  GL_EXEC(glBufferData(GL_ARRAY_BUFFER, cube.GetTriangleVerticesBufferSize(), cube.GetVerticesForTriangle().data(), GL_STATIC_DRAW));
 
   //3. Configure vertex attributes (bind to shader variable from my understanding)
   const unsigned int VERTEX_ATTRIBUTE = shaderProgram.GetAttributeLocation("inPosition");
@@ -176,7 +175,7 @@ static void RenderPhong(GLFWwindow* window)
 
     shaderProgram.SetUniform3fv("spotLightColor", glm::vec3(0, 1, 1));
     shaderProgram.SetUniform3fv("ambientLightColor", glm::vec3(1, 1, 1));
-    GL_EXEC(glDrawArrays(GL_TRIANGLES, 0, Cube::VERTICES_COUNT));
+    GL_EXEC(glDrawArrays(GL_TRIANGLES, 0, cube.GetVerticesCountTriangle()));
     GL_EXEC(glBindVertexArray(0));
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -201,7 +200,6 @@ static void RenderSpecular(GLFWwindow* window)
   }
   //This block is to clean up shader, somehow in AMD graphics card glfwTerminate conflicted with glDeleteProgram
   Shader shaderProgram = Shader(vertexSrc.c_str(), fragmentSrc.c_str());
-
   unsigned int vao, vbo;
   GL_EXEC(glGenVertexArrays(1, &vao));
   GL_EXEC(glGenBuffers(1, &vbo));
@@ -211,21 +209,12 @@ static void RenderSpecular(GLFWwindow* window)
   //2. Bind VBO
   GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, vbo));
   //Load vertices data to GPU, and GL_STATIC_DRAW means data will not be modified after loading
-  GL_EXEC(glBufferData(GL_ARRAY_BUFFER, sizeof(Cube::vertices), Cube::vertices, GL_STATIC_DRAW));
+  GL_EXEC(glBufferData(GL_ARRAY_BUFFER, cube.GetTriangleVerticesBufferSize(), cube.GetVerticesForTriangle().data(), GL_STATIC_DRAW));
 
   //3. Configure vertex attributes (bind to shader variable from my understanding)
-  const unsigned int VERTEX_ATTRIBUTE = shaderProgram.GetAttributeLocation("inPosition");
-  GL_EXEC(glVertexAttribPointer(VERTEX_ATTRIBUTE, Cube::VERTEX_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), Cube::VERTEX_OFFSET_POINTER));
-  GL_EXEC(glEnableVertexAttribArray(VERTEX_ATTRIBUTE));
-
-  const unsigned int TEXTURE_ATTRIBUTE = shaderProgram.GetAttributeLocation("inTexCoord");
-  GL_EXEC(glVertexAttribPointer(TEXTURE_ATTRIBUTE, Cube::TEXTURE_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), Cube::TEXTURE_OFFSET_POINTER));
-  GL_EXEC(glEnableVertexAttribArray(TEXTURE_ATTRIBUTE));
-
-  //4. Configure normal attributes (bind to shader variable from my understanding)
-  const unsigned int NORMAL_ATTRIBUTE = shaderProgram.GetAttributeLocation("inNormal");
-  GL_EXEC(glVertexAttribPointer(NORMAL_ATTRIBUTE, Cube::NORMAL_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), Cube::NORMAL_OFFSET_POINTER));
-  GL_EXEC(glEnableVertexAttribArray(NORMAL_ATTRIBUTE));
+  shaderProgram.SetVertex("inPosition");
+  shaderProgram.SetTexture("inTexCoord");
+  shaderProgram.SetNormal("inNormal");
 
   //5. Unbind VBO, prevent overwritten/polluted
   GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, 0));
@@ -308,7 +297,7 @@ static void RenderSpecular(GLFWwindow* window)
     shaderProgram.SetUniform3fv("cameraPosition", eye);
 
     shaderProgram.SetUniform3fv("spotLightColor", glm::vec3(0.5, 0.5, 0.5));
-    GL_EXEC(glDrawArrays(GL_TRIANGLES, 0, Cube::VERTICES_COUNT));
+    GL_EXEC(glDrawArrays(GL_TRIANGLES, 0, cube.GetVerticesCountTriangle()));
     GL_EXEC(glBindVertexArray(0));
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -333,7 +322,6 @@ static void RenderDiffuse(GLFWwindow* window)
   }
   //This block is to clean up shader, somehow in AMD graphics card glfwTerminate conflicted with glDeleteProgram
   Shader shaderProgram = Shader(vertexSrc.c_str(), fragmentSrc.c_str());
-
   unsigned int vao, vbo;
   GL_EXEC(glGenVertexArrays(1, &vao));
   GL_EXEC(glGenBuffers(1, &vbo));
@@ -343,21 +331,12 @@ static void RenderDiffuse(GLFWwindow* window)
   //2. Bind VBO
   GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, vbo));
   //Load vertices data to GPU, and GL_STATIC_DRAW means data will not be modified after loading
-  GL_EXEC(glBufferData(GL_ARRAY_BUFFER, sizeof(Cube::vertices), Cube::vertices, GL_STATIC_DRAW));
+  GL_EXEC(glBufferData(GL_ARRAY_BUFFER, cube.GetTriangleVerticesBufferSize(), cube.GetVerticesForTriangle().data(), GL_STATIC_DRAW));
 
   //3. Configure vertex attributes (bind to shader variable from my understanding)
-  const unsigned int VERTEX_ATTRIBUTE = shaderProgram.GetAttributeLocation("inPosition");
-  GL_EXEC(glVertexAttribPointer(VERTEX_ATTRIBUTE, Cube::VERTEX_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), Cube::VERTEX_OFFSET_POINTER));
-  GL_EXEC(glEnableVertexAttribArray(VERTEX_ATTRIBUTE));
-  
-  const unsigned int TEXTURE_ATTRIBUTE = shaderProgram.GetAttributeLocation("inTexCoord");
-  GL_EXEC(glVertexAttribPointer(TEXTURE_ATTRIBUTE, Cube::TEXTURE_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), Cube::TEXTURE_OFFSET_POINTER));
-  GL_EXEC(glEnableVertexAttribArray(TEXTURE_ATTRIBUTE));
-
-  //4. Configure normal attributes (bind to shader variable from my understanding)
-  const unsigned int NORMAL_ATTRIBUTE = shaderProgram.GetAttributeLocation("inNormal");
-  GL_EXEC(glVertexAttribPointer(NORMAL_ATTRIBUTE, Cube::NORMAL_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), Cube::NORMAL_OFFSET_POINTER));
-  GL_EXEC(glEnableVertexAttribArray(NORMAL_ATTRIBUTE));
+  shaderProgram.SetVertex("inPosition");
+  shaderProgram.SetTexture("inTexCoord");
+  shaderProgram.SetNormal("inNormal");
 
   //5. Unbind VBO, prevent overwritten/polluted
   GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, 0));
@@ -436,7 +415,7 @@ static void RenderDiffuse(GLFWwindow* window)
     shaderProgram.SetUniform3fv("lightPosition", lightPosition);
 
     shaderProgram.SetUniform3fv("diffuseLightColor", glm::vec3(0.5, 0.5, 0.5));
-    GL_EXEC(glDrawArrays(GL_TRIANGLES, 0, Cube::VERTICES_COUNT));
+    GL_EXEC(glDrawArrays(GL_TRIANGLES, 0, cube.GetVerticesCountTriangle()));
     GL_EXEC(glBindVertexArray(0));
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -471,16 +450,11 @@ static void RenderBasic(GLFWwindow* window)
   //2. Bind VBO
   GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, vbo));
   //Load vertices data to GPU, and GL_STATIC_DRAW means data will not be modified after loading
-  GL_EXEC(glBufferData(GL_ARRAY_BUFFER, sizeof(Cube::vertices), Cube::vertices, GL_STATIC_DRAW));
+  GL_EXEC(glBufferData(GL_ARRAY_BUFFER, cube.GetTriangleVerticesBufferSize(), cube.GetVerticesForTriangle().data(), GL_STATIC_DRAW));
 
   //3. Configure vertex attributes (bind to shader variable from my understanding)
-  const unsigned int VERTEX_ATTRIBUTE = shaderProgram.GetAttributeLocation("inPosition");
-  GL_EXEC(glVertexAttribPointer(VERTEX_ATTRIBUTE, Cube::VERTEX_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), Cube::VERTEX_OFFSET_POINTER));
-  GL_EXEC(glEnableVertexAttribArray(VERTEX_ATTRIBUTE));
-
-  const unsigned int TEXTURE_ATTRIBUTE = shaderProgram.GetAttributeLocation("inTexCoord");
-  GL_EXEC(glVertexAttribPointer(TEXTURE_ATTRIBUTE, Cube::TEXTURE_UNITS, GL_FLOAT, GL_FALSE, Cube::ELEMENTS_PER_VERTEX * sizeof(float), Cube::TEXTURE_OFFSET_POINTER));
-  GL_EXEC(glEnableVertexAttribArray(TEXTURE_ATTRIBUTE));
+  shaderProgram.SetVertex("inPosition");
+  shaderProgram.SetTexture("inTexCoord");
 
   //4. Unbind VBO, prevent overwritten/polluted
   GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, 0));
@@ -554,7 +528,7 @@ static void RenderBasic(GLFWwindow* window)
     shaderProgram.SetUniformMatrix4fv("projection", glm::transpose(camera.GetProjectionMatrix()));
     shaderProgram.SetUniform3fv("lightColor", glm::vec3(1, 1, 1));
     shaderProgram.SetUniformFloat("ambientStrength", 0.9f);
-    GL_EXEC(glDrawArrays(GL_TRIANGLES, 0, Cube::VERTICES_COUNT));
+    GL_EXEC(glDrawArrays(GL_TRIANGLES, 0, cube.GetVerticesCountTriangle()));
     GL_EXEC(glBindVertexArray(0));
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

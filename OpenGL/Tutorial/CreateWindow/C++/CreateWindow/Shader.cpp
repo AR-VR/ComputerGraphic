@@ -80,6 +80,28 @@ void Shader::SetUniform3fv(const std::string &name, const glm::vec3 vector)
   GL_EXEC(glUniform3fv(uniformLocation, 1, glm::value_ptr(vector)));
 }
 
+void Shader::SetVertex(const std::string &name)
+{
+  const unsigned int VERTEX_ATTRIBUTE = GetAttributeLocation(name);
+  GL_EXEC(glVertexAttribPointer(VERTEX_ATTRIBUTE, Shape::VERTEX_UNITS, GL_FLOAT, GL_FALSE, Shape::ELEMENTS_PER_VERTEX * sizeof(float), Shape::VERTEX_OFFSET_POINTER));
+  GL_EXEC(glEnableVertexAttribArray(VERTEX_ATTRIBUTE));
+}
+
+void Shader::SetTexture(const std::string &name)
+{
+  const unsigned int TEXTURE_ATTRIBUTE = GetAttributeLocation(name);
+  GL_EXEC(glVertexAttribPointer(TEXTURE_ATTRIBUTE, Shape::TEXTURE_UNITS, GL_FLOAT, GL_FALSE, Shape::ELEMENTS_PER_VERTEX * sizeof(float), Shape::TEXTURE_OFFSET_POINTER));
+  GL_EXEC(glEnableVertexAttribArray(TEXTURE_ATTRIBUTE));
+}
+
+void Shader::SetNormal(const std::string &name)
+{
+  const unsigned int NORMAL_ATTRIBUTE = GetAttributeLocation(name);
+  GL_EXEC(glVertexAttribPointer(NORMAL_ATTRIBUTE, Shape::NORMAL_UNITS, GL_FLOAT, GL_FALSE, Shape::ELEMENTS_PER_VERTEX * sizeof(float), Shape::NORMAL_OFFSET_POINTER));
+  GL_EXEC(glEnableVertexAttribArray(NORMAL_ATTRIBUTE));
+}
+
+
 Shader::~Shader()
 {
   //practice RAII approach here
