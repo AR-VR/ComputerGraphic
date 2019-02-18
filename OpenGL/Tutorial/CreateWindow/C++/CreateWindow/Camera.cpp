@@ -50,8 +50,9 @@ const glm::mat4 Camera::OrthoGraphicProjection(float right, float left, float to
   return projection;
 }
 
-const glm::mat4 Camera::LookAt(glm::vec3 cameraPosition, glm::vec3 center, glm::vec3 upDirection)
+const glm::mat4 Camera::LookAt(glm::vec3 camPosition, glm::vec3 center, glm::vec3 upDirection)
 {
+  cameraPosition = camPosition;
   float translationArray[] =
   {
     1, 0, 0, -cameraPosition.x,
@@ -76,20 +77,13 @@ const glm::mat4 Camera::LookAt(glm::vec3 cameraPosition, glm::vec3 center, glm::
    -f[0], -f[1], -f[2], 0,
     0,        0,     0, 1
   };
-
   glm::mat4 rotation = glm::make_mat4(rotationArray);
-  worldToCameraMatrix = rotation*translation;
   worldToCameraMatrix = translation*rotation;
   return worldToCameraMatrix;
 }
 
 void Camera::AdvanceProjection(glm::mat4 projectionMatrix) {
   projection = projectionMatrix;
-}
-
-const glm::mat4 Camera::GetProjectionMatrix()
-{
-  return projection;
 }
 
 Camera::~Camera()

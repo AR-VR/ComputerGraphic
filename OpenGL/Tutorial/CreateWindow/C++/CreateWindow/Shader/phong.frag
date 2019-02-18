@@ -33,7 +33,5 @@ void main() {
   float specularIntensity = pow(max(dot(viewDirection, reflectDirection), 0.0), 2.0);
   vec3 specular = specularStrength*specularIntensity*spotLightColor;
 
-
-  
-  FragColor = texture(fragmentTexture, texCoordToFragment)*vec4(ambient+diffuse+specular, 1.0);
+  FragColor =texture(fragmentTexture, texCoordToFragment)*vec4(ambient+diffuse+specular, 1.0);
 }

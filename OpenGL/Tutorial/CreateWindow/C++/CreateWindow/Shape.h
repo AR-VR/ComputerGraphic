@@ -11,8 +11,8 @@ public:
   void Rotate(float yawDegree, float pitchDegree, float rollDegree);
   void Translate(float x, float y, float z);
   const unsigned int GetVerticesCountTriangle() { return verticesCountForTriangle; }
-  std::vector<float> GetVerticesForTriangle() { return vertices; }
-  const unsigned int GetTriangleVerticesBufferSize() { return sizeof(float)*vertices.size(); }
+  const float* const GetDataBufferForTriangle() { return vertices.data(); }
+  const unsigned int GetTriangleDataBufferSize() { return sizeof(float)*vertices.size(); }
   ~Shape() { }
 
   static const unsigned int VERTEX_UNITS = 3;
