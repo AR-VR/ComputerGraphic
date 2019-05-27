@@ -61,6 +61,10 @@ static string LoadFileString(const char* filePath)
   }
 }
 
+static float yawAngle = 0;
+static float pitchAngle = 0;
+static float rollAngle = 0;
+
 static void RenderPhong(GLFWwindow* window)
 {
   //Init GL program
@@ -89,7 +93,7 @@ static void RenderPhong(GLFWwindow* window)
     // input
     // -----
     processInput(window);
-    
+    cube.Rotate(yawAngle, pitchAngle, rollAngle);
     scene.Draw(camera, cube, shaderProgram);
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -139,10 +143,6 @@ int main(int argc, char** argv) {
   return 0;
 }
 
-static float yawAngle = 0;
-static float pitchAngle = 0;
-static float rollAngle = 0;
-
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow *window)
@@ -154,21 +154,27 @@ void processInput(GLFWwindow *window)
 
   if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
     rollAngle += 1;
+    std::cout << "Roll: " << rollAngle << std::endl;
   }
   else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
     rollAngle -= 1;
+    std::cout << "Roll: " << rollAngle << std::endl;
   }
   else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
     pitchAngle += 1;
+    std::cout << "Pitch: " << pitchAngle << std::endl;
   }
   else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
     pitchAngle -= 1;
+    std::cout << "Pitch: " << pitchAngle << std::endl;
   }
   else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
     yawAngle += 1;
+    std::cout << "Yaw: " << yawAngle << std::endl;
   }
   else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
     yawAngle -= 1;
+    std::cout << "Yaw: " << yawAngle << std::endl;
   }
   else if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) 
   {
@@ -176,7 +182,6 @@ void processInput(GLFWwindow *window)
     pitchAngle = 0;
     rollAngle = 0;
   }
-  cube.Rotate(yawAngle, pitchAngle, rollAngle);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
