@@ -36,4 +36,14 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\empty.vert">
+      <Filter>Shader</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Texture\empty.png">
+      <Filter>Texture</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

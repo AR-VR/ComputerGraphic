@@ -67,8 +67,8 @@
       <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)Shader\*.*" "$(TargetDir)Shader" /Y /I /E
-xcopy "$(ProjectDir)Texture\*.*" "$(TargetDir)Texture" /Y /I /E</Command>
+      <Command>xcopy "$(ProjectDir)Shader" "$(TargetDir)Shader" /Y /I /E /S
+xcopy "$(ProjectDir)Texture" "$(TargetDir)Texture" /Y /I /E /S</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -103,6 +103,12 @@ xcopy "$(ProjectDir)Texture" "$(TargetDir)Texture" /Y /I /E /S</Command>
   <ItemGroup>
     <ClInclude Include="GLErrorCheck.h" />
     <ClInclude Include="stb_image.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\empty.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Texture\empty.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
