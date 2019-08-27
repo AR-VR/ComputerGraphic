@@ -111,7 +111,8 @@ xcopy "$(ProjectDir)Texture" "$(TargetDir)Texture" /Y /I /E /S</Command>
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader\empty.vert" />
+    <None Include="Shader\diffuse.frag" />
+    <None Include="Shader\diffuse.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Texture\empty.png" />

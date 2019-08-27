@@ -17,8 +17,8 @@ void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
 void ProcessInput(GLFWwindow *window);
 
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 640;
+const unsigned int SCR_HEIGHT = 480;
 PostProcess *p_PostProcess;
 int main(int argc, char** argv) {
 
@@ -34,6 +34,7 @@ int main(int argc, char** argv) {
 
   // glfw window creation
   // --------------------
+    glfwWindowHint(GLFW_DECORATED, false);
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Window", NULL, NULL);
     if (window == NULL)
     {
