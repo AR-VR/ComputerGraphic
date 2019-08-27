@@ -1,1 +1,1 @@
-# Learn ComputerGraphic 
+# Learn Computer Graphic 
