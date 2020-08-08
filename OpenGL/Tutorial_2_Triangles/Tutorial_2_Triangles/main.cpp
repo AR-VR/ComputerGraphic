@@ -67,8 +67,12 @@ int main(int argc, char** argv) {
 	Triangle triangle;
 	const unsigned int bufferSize = 9 * sizeof(float);
 	GL_EXEC(glBufferData(GL_ARRAY_BUFFER, bufferSize, triangle.ForShape(), GL_STATIC_DRAW));
-	GL_EXEC(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
-	GL_EXEC(glEnableVertexAttribArray(0));
+
+	const unsigned int LayoutLocation = 0;
+	const unsigned int SizePerVertex = 3;
+	const void* const VERTEX_OFFSET_POINTER = (void*)0;
+	GL_EXEC(glVertexAttribPointer(LayoutLocation, SizePerVertex, GL_FLOAT, GL_FALSE, SizePerVertex * sizeof(float), VERTEX_OFFSET_POINTER));
+	GL_EXEC(glEnableVertexAttribArray(LayoutLocation));
 
 	GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, 0));
 	GL_EXEC(glBindVertexArray(0));
@@ -116,7 +120,8 @@ int main(int argc, char** argv) {
 
 		GL_EXEC(glUseProgram(glProgramID));
 		GL_EXEC(glBindVertexArray(vao));
-		GL_EXEC(glDrawArrays(GL_TRIANGLES, 0, 3));
+		const unsigned int vertexCount = 3;
+		GL_EXEC(glDrawArrays(GL_TRIANGLES, 0, vertexCount));
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
