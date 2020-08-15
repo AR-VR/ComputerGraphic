@@ -5,8 +5,8 @@ class Triangle
 {
 public:
 	Triangle();
-	const float * const ForLine() { return verticesForLine.data(); }
-	const float * const ForShape() { return verticesForShape.data(); }
+	const std::vector<float> ForLine() { return verticesForLine; }
+	const std::vector<float> ForShape() { return verticesForShape; }
 
 private:
 	std::vector<float> verticesForPoint;

@@ -65,13 +65,18 @@ int main(int argc, char** argv) {
 	GL_EXEC(glBindVertexArray(vao));
 	GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, vbo));
 	Triangle triangle;
-	const unsigned int bufferSize = 9 * sizeof(float);
-	GL_EXEC(glBufferData(GL_ARRAY_BUFFER, bufferSize, triangle.ForShape(), GL_STATIC_DRAW));
+	const std::vector<float> VertexData = triangle.ForLine();
+	const unsigned int BufferSize = VertexData.size() * sizeof(float);
+	//vbo[] <- triangleVertex
+	GL_EXEC(glBufferData(GL_ARRAY_BUFFER, BufferSize, VertexData.data(), GL_STATIC_DRAW));
+
 
 	const unsigned int LayoutLocation = 0;
-	const unsigned int SizePerVertex = 3;
-	const void* const VERTEX_OFFSET_POINTER = (void*)0;
-	GL_EXEC(glVertexAttribPointer(LayoutLocation, SizePerVertex, GL_FLOAT, GL_FALSE, SizePerVertex * sizeof(float), VERTEX_OFFSET_POINTER));
+	const unsigned int ElementPerVertex = 3;
+	const unsigned int VertexStride = ElementPerVertex * sizeof(float);
+	const void* const VertexOffsetPointer = (void*)0;
+	// vao[location] <- vbo[0]
+	GL_EXEC(glVertexAttribPointer(LayoutLocation, ElementPerVertex, GL_FLOAT, GL_FALSE, VertexStride, VertexOffsetPointer));
 	GL_EXEC(glEnableVertexAttribArray(LayoutLocation));
 
 	GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, 0));
@@ -115,13 +120,10 @@ int main(int argc, char** argv) {
         GL_EXEC(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
         GL_EXEC(glClear(GL_COLOR_BUFFER_BIT));
 
-
-		//GL_EXEC(glDeleteBuffers(1, &vbo));
-
 		GL_EXEC(glUseProgram(glProgramID));
 		GL_EXEC(glBindVertexArray(vao));
-		const unsigned int vertexCount = 3;
-		GL_EXEC(glDrawArrays(GL_TRIANGLES, 0, vertexCount));
+		const unsigned int VertexCount = triangle.ForLine().size() / ElementPerVertex;
+		GL_EXEC(glDrawArrays(GL_LINES, 0, VertexCount));
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
