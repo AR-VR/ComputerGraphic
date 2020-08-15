@@ -11,6 +11,7 @@
 #include "GLErrorCheck.h"
 
 #include "Triangle.h"
+#include "Shader.h"
 
 using namespace std;
 
@@ -71,69 +72,41 @@ int main(int argc, char** argv) {
 	GL_EXEC(glBufferData(GL_ARRAY_BUFFER, BufferSize, VertexData.data(), GL_STATIC_DRAW));
 
 
-	const unsigned int LayoutLocation = 0;
-	const unsigned int ElementPerVertex = 3;
-	const unsigned int VertexStride = ElementPerVertex * sizeof(float);
-	const void* const VertexOffsetPointer = (void*)0;
-	// vao[location] <- vbo[0]
-	GL_EXEC(glVertexAttribPointer(LayoutLocation, ElementPerVertex, GL_FLOAT, GL_FALSE, VertexStride, VertexOffsetPointer));
-	GL_EXEC(glEnableVertexAttribArray(LayoutLocation));
-
-	GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, 0));
-	GL_EXEC(glBindVertexArray(0));
-
-
-	unsigned int glProgramID;
-	GL_EXEC(glProgramID = glCreateProgram());
-
-
-	const string vertexStr= LoadFileString("Shader\\ndc.vert");
-	const char * const vertexSrc = vertexStr.c_str();
-	unsigned int vertexShader;
-	GL_EXEC(vertexShader = glCreateShader(GL_VERTEX_SHADER));
-	GL_EXEC(glShaderSource(vertexShader, 1, &vertexSrc, NULL));
-	GL_COMPILE(vertexShader);
-	GL_EXEC(glAttachShader(glProgramID, vertexShader));
-
-
+	const string vertexStr = LoadFileString("Shader\\ndc.vert");
 	const string fragStr = LoadFileString("Shader\\ndc.frag");
-	const char * const fragSrc = fragStr.c_str();
-	unsigned int fragShader;
-	GL_EXEC(fragShader = glCreateShader(GL_FRAGMENT_SHADER));
-	GL_EXEC(glShaderSource(fragShader, 1, &fragSrc, NULL));
-	GL_COMPILE(fragShader);
-	GL_EXEC(glAttachShader(glProgramID, fragShader));
 
-	GL_LINK(glProgramID);
+	{
+		Shader ndcShader = Shader(vertexStr.c_str(), fragStr.c_str());
 
-	GL_EXEC(glDetachShader(glProgramID, vertexShader));
-	GL_EXEC(glDeleteShader(vertexShader));
-	
-	GL_EXEC(glDetachShader(glProgramID, fragShader));
-	GL_EXEC(glDeleteShader(fragShader));
+		const unsigned int LayoutLocation = ndcShader.GetAttributeLocation("inPosition");
+		const unsigned int ElementPerVertex = 3;
+		const unsigned int VertexStride = ElementPerVertex * sizeof(float);
+		const void* const VertexOffsetPointer = (void*)0;
+		// vao[location] <- vbo[0]
+		GL_EXEC(glVertexAttribPointer(LayoutLocation, ElementPerVertex, GL_FLOAT, GL_FALSE, VertexStride, VertexOffsetPointer));
+		//The reason why the fuck we need this: https://www.gamedev.net/forums/topic/655785-is-glenablevertexattribarray-redundant/
+		GL_EXEC(glEnableVertexAttribArray(LayoutLocation));
 
+		while (!glfwWindowShouldClose(window))
+		{
+			processInput(window);
 
-    while (!glfwWindowShouldClose(window))
-    {
-        processInput(window);
-        
-        GL_EXEC(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
-        GL_EXEC(glClear(GL_COLOR_BUFFER_BIT));
+			GL_EXEC(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
+			GL_EXEC(glClear(GL_COLOR_BUFFER_BIT));
+			ndcShader.UseProgram();
+			GL_EXEC(glBindVertexArray(vao));
+			const unsigned int VertexCount = triangle.ForLine().size() / ElementPerVertex;
+			GL_EXEC(glDrawArrays(GL_LINES, 0, VertexCount));
 
-		GL_EXEC(glUseProgram(glProgramID));
-		GL_EXEC(glBindVertexArray(vao));
-		const unsigned int VertexCount = triangle.ForLine().size() / ElementPerVertex;
-		GL_EXEC(glDrawArrays(GL_LINES, 0, VertexCount));
+			// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+			// -------------------------------------------------------------------------------
+			glfwSwapBuffers(window);
+			glfwPollEvents();
+		}
 
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
-
-	GL_EXEC(glDeleteVertexArrays(1, &vao));
-	GL_EXEC(glDeleteBuffers(1, &vbo));
-	GL_EXEC(glDeleteProgram(glProgramID));
+		GL_EXEC(glDeleteVertexArrays(1, &vao));
+		GL_EXEC(glDeleteBuffers(1, &vbo));
+	}
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------

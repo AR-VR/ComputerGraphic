@@ -99,10 +99,12 @@ xcopy "$(ProjectDir)Texture" "$(TargetDir)Texture" /Y /I /E /S</Command>
   <ItemGroup>
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLErrorCheck.h" />
+    <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Triangle.h" />
   </ItemGroup>
