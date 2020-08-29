@@ -21,8 +21,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 static string LoadFileString(const char* filePath);
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1920;
+const unsigned int SCR_HEIGHT = 1080;
 
 int main(int argc, char** argv) {
 
@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
 	GL_EXEC(glBindVertexArray(vao));
 	GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, vbo));
 	Triangle triangle;
-	const std::vector<float> VertexData = triangle.ForLine();
+	const std::vector<float> VertexData = triangle.ForShape();
 	const unsigned int BufferSize = VertexData.size() * sizeof(float);
 	//vbo[] <- triangleVertex
 	GL_EXEC(glBufferData(GL_ARRAY_BUFFER, BufferSize, VertexData.data(), GL_STATIC_DRAW));
@@ -78,7 +78,8 @@ int main(int argc, char** argv) {
 	const string fragStr = LoadFileString("Shader\\ndc.frag");
 	{
 		Model model;
-		model.Scale(0.5, 0.5, 1.0);
+		model.Scale(1, 1, 1);
+		model.Rotate(0, 0, 0);
 		Shader ndcShader = Shader(vertexStr.c_str(), fragStr.c_str());
 		const unsigned int LayoutLocation = ndcShader.GetAttributeLocation("inPosition");
 		const unsigned int ElementPerVertex = 3;
@@ -88,6 +89,14 @@ int main(int argc, char** argv) {
 		GL_EXEC(glVertexAttribPointer(LayoutLocation, ElementPerVertex, GL_FLOAT, GL_FALSE, VertexStride, VertexOffsetPointer));
 		//The reason why the fuck we need this: https://www.gamedev.net/forums/topic/655785-is-glenablevertexattribarray-redundant/
 		GL_EXEC(glEnableVertexAttribArray(LayoutLocation));
+		Camera camera;
+		const float fovYDegree = 60;
+		const float zNear = 0.1f, zFar = 99.0f;
+		camera.PerspectiveProjection(fovYDegree, ((float)SCR_WIDTH) / ((float)SCR_HEIGHT), zNear, zFar);
+		glm::vec3 eye(0, 0, 1);
+		glm::vec3 center(0, 0, 0);
+		glm::vec3 upDirection(0, 1, 0);
+		camera.LookAt(eye, center, upDirection);
 
 		while (!glfwWindowShouldClose(window))
 		{
@@ -97,9 +106,12 @@ int main(int argc, char** argv) {
 			GL_EXEC(glClear(GL_COLOR_BUFFER_BIT));
 			ndcShader.UseProgram();
 			ndcShader.SetUniformMatrix4fv("model", glm::transpose(model.GetModelMatrix()));
+			ndcShader.SetUniformMatrix4fv("view", glm::transpose(camera.GetView()));
+			ndcShader.SetUniformMatrix4fv("projection", glm::transpose(camera.GetProjection()));
+
 			GL_EXEC(glBindVertexArray(vao));
-			const unsigned int VertexCount = triangle.ForLine().size() / ElementPerVertex;
-			GL_EXEC(glDrawArrays(GL_LINES, 0, VertexCount));
+			const unsigned int VertexCount = triangle.ForShape().size() / ElementPerVertex;
+			GL_EXEC(glDrawArrays(GL_TRIANGLES, 0, VertexCount));
 
 			// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 			// -------------------------------------------------------------------------------
