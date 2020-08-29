@@ -12,6 +12,8 @@
 
 #include "Triangle.h"
 #include "Shader.h"
+#include "Camera.h"
+#include "Model.h"
 
 using namespace std;
 
@@ -72,12 +74,12 @@ int main(int argc, char** argv) {
 	GL_EXEC(glBufferData(GL_ARRAY_BUFFER, BufferSize, VertexData.data(), GL_STATIC_DRAW));
 
 
-	const string vertexStr = LoadFileString("Shader\\ndc.vert");
+	const string vertexStr = LoadFileString("Shader\\mvp.vert");
 	const string fragStr = LoadFileString("Shader\\ndc.frag");
-
 	{
+		Model model;
+		model.Scale(0.5, 0.5, 1.0);
 		Shader ndcShader = Shader(vertexStr.c_str(), fragStr.c_str());
-
 		const unsigned int LayoutLocation = ndcShader.GetAttributeLocation("inPosition");
 		const unsigned int ElementPerVertex = 3;
 		const unsigned int VertexStride = ElementPerVertex * sizeof(float);
@@ -94,6 +96,7 @@ int main(int argc, char** argv) {
 			GL_EXEC(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 			GL_EXEC(glClear(GL_COLOR_BUFFER_BIT));
 			ndcShader.UseProgram();
+			ndcShader.SetUniformMatrix4fv("model", glm::transpose(model.GetModelMatrix()));
 			GL_EXEC(glBindVertexArray(vao));
 			const unsigned int VertexCount = triangle.ForLine().size() / ElementPerVertex;
 			GL_EXEC(glDrawArrays(GL_LINES, 0, VertexCount));
