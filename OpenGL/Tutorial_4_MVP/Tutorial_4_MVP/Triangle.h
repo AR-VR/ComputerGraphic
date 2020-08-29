@@ -9,7 +9,6 @@ public:
 	const std::vector<float> ForShape() { return verticesForShape; }
 
 private:
-	std::vector<float> verticesForPoint;
 	std::vector<float> verticesForLine;
 	std::vector<float> verticesForShape;
 };

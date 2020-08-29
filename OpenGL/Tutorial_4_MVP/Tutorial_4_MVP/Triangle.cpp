@@ -2,29 +2,26 @@
 
 Triangle::Triangle()
 {
-	verticesForPoint =
-	{
-		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		0.0f,  0.5f, 0.0f
-	};
-
+	//   1
+	//   * *
+	//   *   *
+	//   0 * * 2
 	verticesForShape =
 	{
 		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		0.0f,  0.5f, 0.0f
+		-0.5f,  0.5f, 0.0f,
+		 0.5f, -0.5f, 0.0f
 	};
 
 	//GL_LINES: Vertices 0 and 1 are considered a line. Vertices 2 and 3 are considered a line. And so on. If the user specifies a non-even number of vertices, then the extra vertex is ignored.
 	verticesForLine = {
 		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
+		-0.5f,  0.5f, 0.0f,
 
-		0.5f, -0.5f, 0.0f,
-		0.0f,  0.5f, 0.0f,
+		-0.5f,  0.5f, 0.0f,
+		 0.5f, -0.5f, 0.0f,
 		
-		0.0f,  0.5f, 0.0f,
+		 0.5f, -0.5f, 0.0f,
 		-0.5f, -0.5f, 0.0f
 	};
 
