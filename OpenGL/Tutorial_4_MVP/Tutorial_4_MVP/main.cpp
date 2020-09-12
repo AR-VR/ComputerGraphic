@@ -19,16 +19,16 @@ using namespace std;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 static string LoadFileString(const char* filePath);
 // settings
 const unsigned int SCR_WIDTH = 1920;
 const unsigned int SCR_HEIGHT = 1080;
+static float yaw = 0;
+float pitch = 0;
+float roll = 0;
 
 int main(int argc, char** argv) {
-
-#ifndef _DEBUG
-    FreeConsole();
-#endif
 
     glfwInit();
 
@@ -45,6 +45,7 @@ int main(int argc, char** argv) {
         glfwTerminate();
         return -1;
     }
+	glfwSetKeyCallback(window, keyCallback);
     glfwMakeContextCurrent(window);
 
     //Buffer size update callback
@@ -77,9 +78,7 @@ int main(int argc, char** argv) {
 	const string vertexStr = LoadFileString("Shader\\mvp.vert");
 	const string fragStr = LoadFileString("Shader\\ndc.frag");
 	{
-		Model model;
-		model.Scale(1, 1, 1);
-		model.Rotate(0, 0, 0);
+		
 		Shader ndcShader = Shader(vertexStr.c_str(), fragStr.c_str());
 		const unsigned int LayoutLocation = ndcShader.GetAttributeLocation("inPosition");
 		const unsigned int ElementPerVertex = 3;
@@ -101,7 +100,9 @@ int main(int argc, char** argv) {
 		while (!glfwWindowShouldClose(window))
 		{
 			processInput(window);
-
+			Model model;
+			model.Scale(1, 1, 1);
+			model.Rotate(yaw, pitch, roll);
 			GL_EXEC(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 			GL_EXEC(glClear(GL_COLOR_BUFFER_BIT));
 			ndcShader.UseProgram();
@@ -141,6 +142,53 @@ void processInput(GLFWwindow *window)
     }
 }
 
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (key == GLFW_KEY_S) {
+		yaw += 1;
+		std::cout << "Yaw: " << yaw << std::endl;
+		return;
+	}
+
+	if (key == GLFW_KEY_W) {
+		yaw -= 1;
+		std::cout << "Yaw: " << yaw << std::endl;
+		return;
+	}
+
+	if (key == GLFW_KEY_D) {
+		pitch += 1;
+		std::cout << "Pitch: " << yaw << std::endl;
+		return;
+	}
+
+	if (key == GLFW_KEY_A) {
+		pitch -= 1;
+		std::cout << "Pitch: " << pitch << std::endl;
+		return;
+	}
+
+	if (key == GLFW_KEY_Z) {
+		roll += 1;
+		std::cout << "Roll: " << roll << std::endl;
+		return;
+	}
+
+	if (key == GLFW_KEY_X) {
+		roll -= 1;
+		std::cout << "Roll: " << roll << std::endl;
+		return;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
+	{
+		yaw = 0;
+		pitch = 0;
+		roll = 0;
+		std::cout << "Reset" << std::endl;
+		return;
+	}
+}
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
