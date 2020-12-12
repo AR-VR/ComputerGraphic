@@ -25,6 +25,11 @@ Triangle::Triangle()
 		-0.5f, -0.5f, 0.0f
 	};
 
+	verticesWithTexCoord = {
+		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+		-0.5f,  0.5f, 0.0f,	0.0f, 1.0f,
+		 0.5f, -0.5f, 0.0f,	1.0f, 0.0f
+	};
 	//   1
 	//   * *
 	//   *   *
@@ -35,6 +40,7 @@ Triangle::Triangle()
 		1.0f, 0.0f,
 		0.5f, 1.0f
 	};
+
 	//GL_LINE_STRIP: The adjacent vertices are considered lines. Thus, if you pass n vertices, you will get n-1 lines. If the user only specifies 1 vertex, the drawing command is ignored.
 	//verticesForLine = {
 	//	-0.5f, -0.5f, 0.0f,
