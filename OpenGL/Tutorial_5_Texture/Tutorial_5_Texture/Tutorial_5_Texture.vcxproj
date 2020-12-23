@@ -120,8 +120,7 @@ xcopy "$(ProjectDir)Texture" "$(TargetDir)Texture" /Y /I /E /S</Command>
     <None Include="Shader\texture.vert" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Texture\coordinate.png" />
-    <Image Include="Texture\wall.jpg" />
+    <Image Include="Texture\coordinate.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

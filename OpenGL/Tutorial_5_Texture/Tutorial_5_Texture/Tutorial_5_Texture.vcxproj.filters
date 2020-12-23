@@ -78,10 +78,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Texture\wall.jpg">
-      <Filter>Texture</Filter>
-    </Image>
-    <Image Include="Texture\coordinate.png">
+    <Image Include="Texture\coordinate.jpg">
       <Filter>Texture</Filter>
     </Image>
   </ItemGroup>
