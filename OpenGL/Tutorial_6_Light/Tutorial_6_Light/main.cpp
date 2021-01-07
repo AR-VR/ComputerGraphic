@@ -12,7 +12,7 @@
 
 #include "GLErrorCheck.h"
 
-#include "Triangle.h"
+#include "Cube.h"
 #include "Shader.h"
 #include "Camera.h"
 #include "Model.h"
@@ -75,17 +75,32 @@ int main(int argc, char** argv) {
 	GL_EXEC(glBindVertexArray(vao));
 
 	GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, vbo));
-	Triangle triangle;
-	const std::vector<float> VertexData = triangle.ShapeWithTexture();
+	Cube cube;
+	const std::vector<float> VertexData = cube.ShapeWithTexture();
 	const unsigned int BufferSize = VertexData.size() * sizeof(float);
 	//vbo[] <- triangleVertex
 	GL_EXEC(glBufferData(GL_ARRAY_BUFFER, BufferSize, VertexData.data(), GL_STATIC_DRAW));
 
-	unsigned int indices[] = {
-		0, 1, 2
+	std::vector<unsigned int> indices =
+	{
+		//   1 * * 3
+		//   * *   *
+		//   *   * *
+		//   0 * * 2
+		0, 1, 2,
+		3, 2, 1,
+
+		//   5 * * 7
+		//   * *   *
+		//   *   * *
+		//   4 * * 6
+		4, 5, 6,
+		7, 6, 5,
+
+
 	};
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 
 	unsigned int textureID;
 	{
@@ -153,14 +168,16 @@ int main(int argc, char** argv) {
 		glm::vec3 upDirection(0, 1, 0);
 		camera.LookAt(eye, center, upDirection);
 		Model model;
-		model.Scale(1, 1, 1);
+		model.Scale(0.5, 0.5, 0.5);
 		while (!glfwWindowShouldClose(window))
 		{
 			processInput(window);
 			model.Rotate(yaw, pitch, roll);
-			GL_EXEC(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
-			GL_EXEC(glClear(GL_COLOR_BUFFER_BIT));
 
+			GL_EXEC(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
+			GL_EXEC(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+			GL_EXEC(glEnable(GL_DEPTH_TEST));
+			GL_EXEC(glDepthFunc(GL_LESS));
 			glActiveTexture(GL_TEXTURE0);
 			GL_EXEC(glBindTexture(GL_TEXTURE_2D, textureID));
 			
@@ -170,7 +187,7 @@ int main(int argc, char** argv) {
 			ndcShader.SetUniformMatrix4fv("projection", glm::transpose(camera.GetProjection()));
 			
 			GL_EXEC(glBindVertexArray(vao));
-			GL_EXEC(glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0));
+			GL_EXEC(glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0));
 
 			// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 			// -------------------------------------------------------------------------------
