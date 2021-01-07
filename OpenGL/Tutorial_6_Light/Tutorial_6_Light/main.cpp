@@ -90,14 +90,20 @@ int main(int argc, char** argv) {
 		0, 1, 2,
 		3, 2, 1,
 
-		//   5 * * 7
-		//   * *   *
+		//   7 * * 5
 		//   *   * *
-		//   4 * * 6
+		//   * *   *
+		//   6 * * 4
 		4, 5, 6,
 		7, 6, 5,
 
+		//Left
+		0, 4, 5,
+		5, 1, 0,
 
+		//Right
+		2, 6, 7,
+		7, 3, 2,
 	};
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
