@@ -72,5 +72,7 @@ void Model::Rotate(const float yawDegree, const float pitchDegree, const float r
 
 const glm::mat4 Model::GetModelMatrix()
 {
-	return translation * rotation * scale;
+	//return translation * rotation * scale;
+	//transpose(T) * transpose(R) * transpose(S) = transpose(S * R * T)
+	return scale * rotation * translation;
 }

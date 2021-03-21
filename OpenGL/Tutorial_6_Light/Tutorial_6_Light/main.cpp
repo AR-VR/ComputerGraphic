@@ -27,8 +27,11 @@ static string LoadFileString(const char* filePath);
 const unsigned int SCR_WIDTH = 1920;
 const unsigned int SCR_HEIGHT = 1080;
 static float yaw = 0;
-float pitch = 0;
-float roll = 0;
+static float pitch = 0;
+static float roll = 0;
+
+static float lightX = 0;
+static float lightY = 0;
 
 int main(int argc, char** argv) {
 
@@ -191,18 +194,18 @@ int main(int argc, char** argv) {
 		const float fovYDegree = 60;
 		const float zNear = 0.1f, zFar = 99.0f;
 		camera.PerspectiveProjection(fovYDegree, ((float)SCR_WIDTH) / ((float)SCR_HEIGHT), zNear, zFar);
-		glm::vec3 eye(0, 0, 1);
+		glm::vec3 eye(0, 0, 3);
 		glm::vec3 center(0, 0, 0);
 		glm::vec3 upDirection(0, 1, 0);
 		camera.LookAt(eye, center, upDirection);
 		Model model;
-		model.Scale(0.5, 0.5, 0.5);
+		model.Scale(1.0, 1.0, 1.0);
 
 		while (!glfwWindowShouldClose(window))
 		{
 			processInput(window);
 			model.Rotate(yaw, pitch, roll);
-
+			
 			GL_EXEC(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 			GL_EXEC(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 			GL_EXEC(glEnable(GL_DEPTH_TEST));
@@ -221,9 +224,9 @@ int main(int argc, char** argv) {
 			
 			//-----------------------------------------------------------------------------------------
 			Model lightCubeModel;
-			lightCubeModel.Scale(0.25, 0.25, 0.25);
+			lightCubeModel.Scale(1.0, 1.0, 1.0);
 			lightCubeModel.Rotate(-yaw, -pitch, -roll);
-			lightCubeModel.Translate(1.7, 1.5, 0);
+			lightCubeModel.Translate(lightX, lightY, 0);
 
 			lightCubeShader.UseProgram();
 			lightCubeShader.SetUniformMatrix4fv("model", glm::transpose(lightCubeModel.GetModelMatrix()));
@@ -263,6 +266,28 @@ void processInput(GLFWwindow *window)
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	if (key == GLFW_KEY_UP) {
+		lightY += 0.1;
+		std::cout << "lightY: " << lightY << std::endl;
+		return;
+	}
+	if (key == GLFW_KEY_DOWN) {
+		lightY -= 0.1;
+		std::cout << "lightY: " << lightY << std::endl;
+		return;
+	}
+
+	if (key == GLFW_KEY_RIGHT) {
+		lightX += 0.1;
+		std::cout << "lightX: " << lightX << std::endl;
+		return;
+	}
+	if (key == GLFW_KEY_LEFT) {
+		lightX -= 0.1;
+		std::cout << "lightX: " << lightX << std::endl;
+		return;
+	}
+
 	if (key == GLFW_KEY_S) {
 		yaw += 1;
 		std::cout << "Yaw: " << yaw << std::endl;
@@ -301,9 +326,11 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 	if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
 	{
-		yaw = 0;
-		pitch = 0;
-		roll = 0;
+		yaw    = 0;
+		pitch  = 0;
+		roll   = 0;
+		lightX = 0;
+		lightY = 0;
 		std::cout << "Reset" << std::endl;
 		return;
 	}
