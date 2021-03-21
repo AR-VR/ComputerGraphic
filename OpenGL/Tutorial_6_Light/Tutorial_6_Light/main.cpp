@@ -61,7 +61,6 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-
 	//Vertex buffer object
 	unsigned int vao;
 	GL_EXEC(glGenVertexArrays(1, &vao));
@@ -75,11 +74,13 @@ int main(int argc, char** argv) {
 	GL_EXEC(glBindVertexArray(vao));
 
 	GL_EXEC(glBindBuffer(GL_ARRAY_BUFFER, vbo));
+
 	Cube cube;
 	const std::vector<float> VertexData = cube.ShapeWithTexture();
 	const unsigned int BufferSize = VertexData.size() * sizeof(float);
 	//vbo[] <- triangleVertex
 	GL_EXEC(glBufferData(GL_ARRAY_BUFFER, BufferSize, VertexData.data(), GL_STATIC_DRAW));
+
 
 	std::vector<unsigned int> indices =
 	{
@@ -141,16 +142,19 @@ int main(int argc, char** argv) {
 		stbi_image_free(data);
 	}
 
+	const string vertexStrLight = LoadFileString("Shader\\light.vert");
+	const string fragStrLight = LoadFileString("Shader\\light.frag");
+
 	const string vertexStr = LoadFileString("Shader\\texture.vert");
 	const string fragStr = LoadFileString("Shader\\texture.frag");
 	{		
 		Shader ndcShader = Shader(vertexStr.c_str(), fragStr.c_str());
-		const unsigned int PositionLayoutLocation = ndcShader.GetAttributeLocation("inPosition");
 		const unsigned int ElementPerVertex = 3;
 		const unsigned int ElementPerTex = 2;
 		const unsigned int VertexStride = ElementPerVertex * sizeof(float);
 		const unsigned int VertexTexStride = (ElementPerVertex + ElementPerTex) * sizeof(float);
 
+		const unsigned int PositionLayoutLocation = ndcShader.GetAttributeLocation("inPosition");
 		const void* const VertexOffsetPointer = (void*)0;
 		// vao[location] <- vbo[0]
 		GL_EXEC(glVertexAttribPointer(PositionLayoutLocation, ElementPerVertex, GL_FLOAT, GL_FALSE, VertexTexStride, VertexOffsetPointer));
@@ -160,10 +164,28 @@ int main(int argc, char** argv) {
 
 		const unsigned int TextureLayoutLocation = ndcShader.GetAttributeLocation("inTexCoord");
 		const void* const TextureOffsetPointer = (void*)VertexStride;
-
 		GL_EXEC(glVertexAttribPointer(TextureLayoutLocation, ElementPerTex, GL_FLOAT, GL_FALSE, VertexTexStride, TextureOffsetPointer));
 		//The reason why the fuck we need this: https://www.gamedev.net/forums/topic/655785-is-glenablevertexattribarray-redundant/
 		GL_EXEC(glEnableVertexAttribArray(TextureLayoutLocation));
+
+
+
+		unsigned int lightVao;
+		GL_EXEC(glGenVertexArrays(1, &lightVao));
+		GL_EXEC(glBindVertexArray(lightVao));
+		Shader lightCubeShader = Shader(vertexStrLight.c_str(), fragStrLight.c_str());
+
+		const unsigned int PositionLayoutLightCubeLocation = lightCubeShader.GetAttributeLocation("inPosition");
+		GL_EXEC(glVertexAttribPointer(PositionLayoutLightCubeLocation, ElementPerVertex, GL_FLOAT, GL_FALSE, VertexTexStride, VertexOffsetPointer));
+		//The reason why the fuck we need this: https://www.gamedev.net/forums/topic/655785-is-glenablevertexattribarray-redundant/
+		GL_EXEC(glEnableVertexAttribArray(PositionLayoutLightCubeLocation));
+
+		const unsigned int TextureLayoutLightCubeLocation = lightCubeShader.GetAttributeLocation("inTexCoord");
+		GL_EXEC(glVertexAttribPointer(TextureLayoutLightCubeLocation, ElementPerTex, GL_FLOAT, GL_FALSE, VertexTexStride, TextureOffsetPointer));
+		//The reason why the fuck we need this: https://www.gamedev.net/forums/topic/655785-is-glenablevertexattribarray-redundant/
+		GL_EXEC(glEnableVertexAttribArray(TextureLayoutLightCubeLocation));
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 
 		Camera camera;
 		const float fovYDegree = 60;
@@ -175,6 +197,7 @@ int main(int argc, char** argv) {
 		camera.LookAt(eye, center, upDirection);
 		Model model;
 		model.Scale(0.5, 0.5, 0.5);
+
 		while (!glfwWindowShouldClose(window))
 		{
 			processInput(window);
@@ -184,7 +207,7 @@ int main(int argc, char** argv) {
 			GL_EXEC(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 			GL_EXEC(glEnable(GL_DEPTH_TEST));
 			GL_EXEC(glDepthFunc(GL_LESS));
-			glActiveTexture(GL_TEXTURE0);
+			GL_EXEC(glActiveTexture(GL_TEXTURE0));
 			GL_EXEC(glBindTexture(GL_TEXTURE_2D, textureID));
 			
 			ndcShader.UseProgram();
@@ -195,12 +218,26 @@ int main(int argc, char** argv) {
 			GL_EXEC(glBindVertexArray(vao));
 			GL_EXEC(glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0));
 
+			
+			//-----------------------------------------------------------------------------------------
+			Model lightCubeModel;
+			lightCubeModel.Scale(0.25, 0.25, 0.25);
+			lightCubeModel.Rotate(-yaw, -pitch, -roll);
+			lightCubeModel.Translate(1.7, 1.5, 0);
+
+			lightCubeShader.UseProgram();
+			lightCubeShader.SetUniformMatrix4fv("model", glm::transpose(lightCubeModel.GetModelMatrix()));
+			lightCubeShader.SetUniformMatrix4fv("view", glm::transpose(camera.GetView()));
+			lightCubeShader.SetUniformMatrix4fv("projection", glm::transpose(camera.GetProjection()));
+
+			GL_EXEC(glBindVertexArray(lightVao));
+			GL_EXEC(glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0));
 			// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 			// -------------------------------------------------------------------------------
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
-
+		GL_EXEC(glDeleteVertexArrays(1, &lightVao));
 		GL_EXEC(glDeleteVertexArrays(1, &vao));
 		GL_EXEC(glDeleteBuffers(1, &vbo));
 		GL_EXEC(glDeleteBuffers(1, &ebo));

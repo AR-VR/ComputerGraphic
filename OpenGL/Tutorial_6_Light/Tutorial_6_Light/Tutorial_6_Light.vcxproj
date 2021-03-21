@@ -115,6 +115,8 @@ xcopy "$(ProjectDir)Texture" "$(TargetDir)Texture" /Y /I /E /S</Command>
     <ClInclude Include="Triangle.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shader\light.frag" />
+    <None Include="Shader\light.vert" />
     <None Include="Shader\mvp.vert" />
     <None Include="Shader\ndc.frag" />
     <None Include="Shader\ndc.vert" />
