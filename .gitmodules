@@ -18,3 +18,7 @@
 	path = Vendor/bullet
 	url = https://github.com/bulletphysics/bullet3.git
 	branch = master
+[submodule "Vendor/assimp"]
+	path = Vendor/assimp
+	url = https://github.com/assimp/assimp.git
+	branch = master
