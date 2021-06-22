@@ -1,7 +1,6 @@
 #include<iostream>
 #include<fstream>
 #include<sstream>
-
 #include "GLErrorCheck.h"
 
 using namespace std;
@@ -13,22 +12,26 @@ void processInput(GLFWwindow *window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-int main(int argc, char** argv) {
+int main(const int argc, const char** argv) {
 
-#ifndef _DEBUG
-    FreeConsole();
-#endif
-
-    glfwInit();
-
+    if(!glfwInit())
+    {
+        std::cout << "Failed to Init GLFW" << std::endl;
+        return -1;
+    }
+    
 #ifdef __APPLE__
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
 #endif
 
   // glfw window creation
   // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Window", NULL, NULL);
-    if (window == NULL)
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Window", nullptr, nullptr);
+    if (window == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();

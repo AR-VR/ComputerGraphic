@@ -7,20 +7,21 @@
 #include <btBulletDynamicsCommon.h>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+#include <GLFW/glfw3.h>
+#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-// Reference: https://github.com/nothings/stb/blob/master/stb_image.h#L4
-// To use stb_image, add this in *one* C++ source file.
-//     #define STB_IMAGE_IMPLEMENTATION
 
 #include <stb_image.h>
 #define STB_IMAGE_IMPLEMENTATION
 
 #include<iostream>
-
+#if (defined _DEBUG || !defined NDEBUG)
+#define GL_DEBUG 1
+#else
+#define GL_DEBUG 0
+#endif
 //Very useful light-weight error checking that helps debug OpenGL
-
-#ifdef _DEBUG
+#ifdef GL_DEBUG
 #define DEBUG_THROW do { \
   std::cout << "Exception at "<< __FILE__ <<":"<< __LINE__ << std::endl; \
   abort(); \
@@ -42,7 +43,7 @@ inline bool GL_ExecuteOK(const char* stmt)
 		case GL_INVALID_OPERATION:             error = "INVALID_OPERATION"; break;
 		case GL_OUT_OF_MEMORY:                 error = "OUT_OF_MEMORY"; break;
 		case GL_INVALID_FRAMEBUFFER_OPERATION: error = "INVALID_FRAMEBUFFER_OPERATION"; break;
-		default:							   error = "Unknown Error code: "+ errorCode; break;
+        default:							   error = "Unknown Error code: " + std::to_string(errorCode); break;
 		}
 		std::cout << stmt << " " << error.c_str() << std::endl;
     return false;
@@ -53,7 +54,7 @@ inline bool GL_ExecuteOK(const char* stmt)
   }
 }
 
-#ifdef _DEBUG
+#if GL_DEBUG
 #define GL_EXEC(stmt) do { \
 	stmt; \
 	if(!GL_ExecuteOK(#stmt)) { DEBUG_THROW; }\
@@ -69,7 +70,7 @@ inline bool GL_CompileOK(GLint shader) {
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
-		glGetShaderInfoLog(shader, 512, NULL, infoLog);
+		glGetShaderInfoLog(shader, 512, nullptr, infoLog);
 		std::cout << "ERROR::SHADER::COMPILATION_FAILED\n" << infoLog << std::endl;
     return false;
 	} 
@@ -80,7 +81,7 @@ inline bool GL_CompileOK(GLint shader) {
 	}
 }
 
-#ifdef _DEBUG
+#ifdef GL_DEBUG
 #define GL_COMPILE(shader) do { \
 	glCompileShader(shader); \
   if(!GL_CompileOK(shader)) { DEBUG_THROW; }\
@@ -96,7 +97,7 @@ inline bool GL_LinkOK(GLint shaderProgram) {
 	GLchar infoLog[512];
 	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
 	if (!success) {
-		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+		glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
 		std::cout << "ERROR::SHADER PROGRAM::LINK_FAILED\n" << infoLog << std::endl;
     return false;
 	} 
@@ -107,7 +108,7 @@ inline bool GL_LinkOK(GLint shaderProgram) {
 	}
 }
 
-#ifdef _DEBUG
+#ifdef GL_DEBUG
 #define GL_LINK(program) do { \
 	glLinkProgram(program); \
   if(!GL_LinkOK(program)) { DEBUG_THROW; }\
